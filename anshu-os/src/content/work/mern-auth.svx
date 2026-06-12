@@ -1,0 +1,54 @@
+---
+title: MERN Auth System
+status: DEPLOYED
+summary: A production-grade authentication system — token rotation, email verification, password reset — built once, properly, and reused since.
+stack:
+  - Node.js
+  - Express
+  - MongoDB
+  - JWT
+metrics:
+  - access + refresh token flow with rotation
+  - email verification and password reset
+  - reused as the auth layer in later projects
+repo: https://github.com/anshuprakash
+order: 4
+---
+
+<!-- TODO(anshu): verify repo URL; add email provider (resend/nodemailer/etc.) to stack if you want -->
+
+## The problem
+
+Every tutorial auth system works until it meets reality: tokens that never expire, reset links that work twice, verification emails that double as account-enumeration oracles. This project was about building the auth layer *once*, correctly enough to reuse — and it has since been the seed of the auth in my other products.
+
+## Architecture
+
+The flow is the standard two-token design, done all the way:
+
+- **Short-lived access token** (JWT, minutes) sent on each request.
+- **Refresh token** in an `httpOnly` cookie — JavaScript can't read it, XSS can't exfiltrate it.
+- **Rotation on every refresh**: the old refresh token is invalidated when a new one is issued, so a stolen token has one use at most, and reuse signals theft.
+
+```ts
+// refresh endpoint — rotation is the security boundary
+const stored = await RefreshToken.findOne({ token: incoming });
+if (!stored || stored.usedAt) {
+	await RefreshToken.revokeFamily(stored?.family); // reuse → burn the chain
+	throw new Unauthorized();
+}
+stored.usedAt = new Date();
+const next = await RefreshToken.issue(stored.family, user);
+```
+
+Email verification and password reset use single-use, expiring, hashed tokens — the database stores the hash, the email carries the secret, and a used or expired link is just dead.
+
+## Decisions & tradeoffs
+
+- **Cookies for refresh, memory for access.** localStorage tokens are one XSS away from account takeover; this split is mildly more plumbing and meaningfully safer.
+- **Uniform responses on auth endpoints** — "if an account exists, an email was sent" — so signup and reset flows can't be used to enumerate users.
+- **Token *family* tracking** rather than single-token rotation: a detected reuse revokes the whole chain, which is what actually limits a replayed token.
+
+## What broke and what I'd change
+
+- Clock skew between server instances briefly made fresh access tokens look expired. Fixed with a small leeway window in verification — and a note-to-self that time is a distributed-systems problem even in small apps.
+- I'd add optional TOTP two-factor next; the session model already supports the extra verification step.

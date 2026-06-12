@@ -1,0 +1,66 @@
+/* ANSHU.OS design tokens — see ANSHU-OS-BLUEPRINT.md §2 */
+
+:root {
+	/* Surfaces — subtle blue-shift, not pure neutral */
+	--void: #050507; /* page background, the "off screen" */
+	--substrate: #0a0b10; /* section backgrounds */
+	--panel: #10121a; /* cards, terminal body */
+	--panel-up: #161927; /* hover / raised state */
+	--hairline: #232738; /* 1px borders, dividers */
+
+	/* Ink — ramp tuned to pass WCAG AA (≥4.5:1) on every surface it sits on */
+	--ink: #e8eaf2; /* primary text */
+	--ink-dim: #98a0b8; /* secondary text */
+	--ink-faint: #7d83a0; /* metadata, line numbers */
+
+	/* Accents — strict roles, never decorative gradients */
+	--signal: #4d7cff; /* electric blue: interactive, links, focus */
+	--signal-glow: #4d7cff26; /* 15% alpha for glows/halos */
+	--pulse: #b86eff; /* neon purple: AI/Lab contexts ONLY */
+	--trace: #41e2d8; /* cyan: data, metrics, terminal output ONLY */
+	--alert: #ff6e5e; /* errors in terminal, sparingly */
+
+	/* Type scale — 1.25 ratio, fluid */
+	--text-hero: clamp(2.75rem, 6vw, 5.5rem);
+	--text-h2: clamp(2rem, 3.5vw, 3rem);
+	--text-h3: 1.5rem;
+	--text-body: 1.0625rem;
+	--text-ui: 0.9375rem;
+	--text-mono: 0.8125rem;
+
+	/* Motion */
+	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+	--ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+	--dur-fast: 160ms;
+	--dur-base: 400ms;
+	--dur-slow: 900ms;
+
+	/* Layout rhythm */
+	--section-gap: clamp(6rem, 12vh, 10rem);
+	--content-max: 1200px;
+	--prose-max: 680px;
+}
+
+/* Map tokens into Tailwind v4 theme → utilities like bg-panel, text-ink-dim, font-display */
+@theme inline {
+	--color-void: var(--void);
+	--color-substrate: var(--substrate);
+	--color-panel: var(--panel);
+	--color-panel-up: var(--panel-up);
+	--color-hairline: var(--hairline);
+	--color-ink: var(--ink);
+	--color-ink-dim: var(--ink-dim);
+	--color-ink-faint: var(--ink-faint);
+	--color-signal: var(--signal);
+	--color-signal-glow: var(--signal-glow);
+	--color-pulse: var(--pulse);
+	--color-trace: var(--trace);
+	--color-alert: var(--alert);
+
+	--font-display: 'Clash Display', system-ui, sans-serif;
+	--font-body: 'General Sans', system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+	--ease-out: var(--ease-out);
+	--ease-inout: var(--ease-inout);
+}

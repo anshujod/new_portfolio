@@ -1,0 +1,46 @@
+---
+title: "Booting ANSHU.OS: designing a portfolio as an operating system"
+date: 2026-06-12
+category: Projects
+summary: Why this site pretends to be an OS, where the metaphor earns its keep, and the restraint rules that keep it from becoming a particle-system demo.
+---
+
+## One metaphor, executed deeply
+
+Most portfolio sites are a pile of effects: a hero animation from one tutorial, tilt cards from another, a cursor trail from a third. Nothing relates to anything. The fix I landed on: pick **one** organizing idea and make every section answer to it.
+
+The idea here is that this site isn't a portfolio *about* an engineer — it's presented as a system *built by* one. The hero is a boot sequence. About is a kernel changelog. Projects are deployed missions. The contact form is a terminal, because it is one.
+
+The metaphor isn't decoration; it's a design constraint. When I consider adding something, the question is "what would this be in the OS?" — and if there's no answer, it doesn't ship.
+
+## Color that encodes information
+
+The palette has three accents with strict jobs:
+
+- **Signal blue** — interactive things, and only interactive things.
+- **Pulse purple** — appears *only* in AI contexts. When you see purple here, it means AI.
+- **Trace cyan** — data: metrics, terminal output, timestamps.
+
+This sounds precious until you notice the effect: color stops being mood and starts being legend. You can skim the site by hue.
+
+## The restraint budget
+
+The sites this one admires — Linear, Stripe, Vercel — are admired for what they *don't* do. So the boldness budget is spent in exactly three places: the boot sequence, the skills constellation, and the command terminal. Everything else is typography, spacing, and copy.
+
+```css
+/* the entire motion vocabulary */
+--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+--dur-fast: 160ms;   /* hovers */
+--dur-base: 400ms;   /* reveals */
+--dur-slow: 900ms;   /* the hero, once */
+```
+
+Three durations, one easing curve for entrances. When everything moves the same way, motion reads as physics instead of noise.
+
+## Honesty as architecture
+
+The most important design decision wasn't visual. Early drafts of the content claimed projects that didn't exist yet — a multi-agent research assistant, a finished football prediction engine. A recruiter who opens the GitHub and finds neither loses trust instantly, and the premium aesthetic makes it *worse*: polish on a false claim reads as deliberate.
+
+So the architecture separates **deployed** from **in development** at the data level — mission status is a frontmatter field with rules, and unfinished work lives in the AI Lab as experiments with live commit timestamps. "In progress, here's the repo" is credible. "Done" without evidence is not.
+
+The site is the first project it documents. This post is the first log entry. More as the lab fills up.

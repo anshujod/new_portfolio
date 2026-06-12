@@ -1,0 +1,51 @@
+---
+title: "I built the chatbot on my portfolio: RAG on a static site for $0"
+date: 2026-06-12
+category: AI
+summary: No vector database, no server, no API bill — a build-time index, BM25-or-cosine retrieval, and one edge function. Architecture notes from the lab's first deployed experiment.
+---
+
+<!-- TODO(anshu): review before publishing — written from the actual implementation in this repo -->
+
+## The constraint is the design
+
+The "Ask About Me" box in [the lab](/lab) is a retrieval-augmented chatbot over my resume, case studies, and blog posts. The constraint that shaped it: this site is fully prerendered static HTML on Cloudflare Pages, and I wanted the chatbot to cost nothing at rest. That rules out a vector database, a long-running server, and anything with a monthly invoice.
+
+What's left turns out to be enough — and the corpus makes it obvious why. Everything I've written here chunks into **35 pieces**. You do not need infrastructure to search 35 things.
+
+## Build time: the index is just a JSON file
+
+A script runs before every build: it walks the content, strips frontmatter and code blocks, splits on headings, packs paragraphs into ~200-token chunks, and writes `chunks.json` with a source label on each chunk (`case study: Chatify — Decisions & tradeoffs`). The label matters: it goes into the prompt later, so the model can say *where* an answer came from.
+
+The script has two modes. With Cloudflare credentials it embeds every chunk with `bge-base-en-v1.5` on Workers AI and stores the vectors — cosine similarity at query time. Without credentials it writes text-only chunks and retrieval falls back to **BM25**, computed in the worker from the same file. At this corpus size, honestly, the lexical path holds its own: most questions about a person's work share vocabulary with the answer.
+
+## Runtime: one edge function
+
+`POST /api/ask` does five things:
+
+1. **Rate limit by IP** — a sliding window, 10 requests per 5 minutes, before any real work happens. Cheap rejection first; I learned that pattern wiring Arcjet into Chatify.
+2. **Cap everything** — 4-message context window, 500 chars per message, 512 output tokens. Free tiers stay free because of caps, not good intentions.
+3. **Retrieve** top-4 chunks (cosine if the index has vectors and the AI binding is up, BM25 otherwise).
+4. **Prompt** Llama 3.1 8B on Workers AI with the chunks and rules: answer only from context, say "I don't know" when it's not there, refuse off-topic in one sentence.
+5. **Stream** the response straight through as server-sent events, so tokens render as they arrive.
+
+```ts
+const chunks = retrieve(lastUser.content, queryVector); // top-4
+const stream = await ai.run('@cf/meta/llama-3.1-8b-instruct', {
+	messages: [{ role: 'system', content: systemPrompt(context) }, ...messages],
+	stream: true,
+	max_tokens: 512
+});
+return new Response(stream, { headers: sseHeaders });
+```
+
+## The honesty clause
+
+The system prompt's most important line isn't about retrieval — it's *"be honest about what is in progress vs. shipped; understatement beats overstatement."* One of the suggested questions on the page is "Is he actually good at football analytics yet?", and the indexed answer says: in progress, models run, not validated against a real tournament. A chatbot that admits that is a better credential than one that oversells.
+
+## What I'd tell you to steal
+
+- **Chunk labels in the prompt.** Source attribution costs nothing and grounds the model visibly.
+- **A lexical fallback.** Your RAG demo shouldn't be down because an embedding API is.
+- **Caps before quality.** Token limits, message windows, and rate limits are the difference between a fun feature and a surprise bill.
+- **Skip the vector DB until your chunks need pagination.** Mine fit in a JSON file the worker imports. Yours might too.

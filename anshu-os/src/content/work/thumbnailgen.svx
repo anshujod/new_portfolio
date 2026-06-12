@@ -1,0 +1,41 @@
+---
+title: AI ThumbnailGen
+status: DEPLOYED
+summary: Prompt-to-thumbnail generation for creators — an AI image pipeline wrapped in product decisions about cost and abuse.
+stack:
+  - React
+  - Node.js
+  - Express
+  - MongoDB
+metrics:
+  - prompt → generated thumbnail pipeline
+  - credit-based usage to cap generation cost
+  - gallery + regeneration flow
+repo: https://github.com/anshuprakash
+order: 3
+---
+
+<!-- TODO(anshu): confirm which image-generation API/model you used, repo + demo URLs, and any usage numbers -->
+
+## The problem
+
+Creators iterate on thumbnails constantly, and design tools are overkill for "give me five options for this video title." ThumbnailGen turns a prompt into thumbnail candidates — which sounds like an API call, and is actually a product problem: image generation costs real money per click, so the interesting engineering is everything *around* the model.
+
+## Architecture
+
+- **React** front end: prompt composer, generation gallery, regenerate-with-changes flow.
+- **Node/Express** backend that owns the image-generation API key — the client never talks to the model provider directly.
+- **MongoDB** for users, generation history, and credit balances.
+- **Credit system** as the cost circuit-breaker: every generation debits credits *before* the API call, refunds on failure. The default deny — no credits, no spend — is what makes exposing an expensive API to the public survivable.
+
+## Decisions & tradeoffs
+
+- **Server-side prompt assembly.** The user's text is wrapped in a thumbnail-tuned prompt template server-side (composition, contrast, text-space hints). Users get good results without prompt engineering; the template evolves without client deploys.
+- **Store generation metadata, reference images by URL** rather than re-hosting every image — storage cost stays flat while history remains browsable.
+- **Synchronous generation with a visible progress state** instead of a job queue. At this scale a queue is ceremony; the honest tradeoff is a spinner the user actually watches.
+
+## What broke and what I'd change
+
+- Failed generations initially ate credits — the debit happened, the refund path had a bug nobody hit until a provider outage hit everyone at once. Refund-on-failure is now tested explicitly.
+- Prompt injection is real even for images: users found template-escaping phrasings that produced off-brand output. Input sanitation plus template hardening fixed the worst of it.
+- I'd add an async queue + webhook flow before scaling past hobby traffic — synchronous generation ties a server connection to the provider's latency.

@@ -1,0 +1,12 @@
+{
+	"version": "0.0.1",
+	"configurations": [
+		{
+			"name": "anshu-os",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": ["run", "dev"],
+			"cwd": "/Users/anshuprakash/Downloads/anshu_new_portfolio/anshu-os",
+			"port": 5173
+		}
+	]
+}

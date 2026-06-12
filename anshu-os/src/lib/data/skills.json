@@ -1,0 +1,24 @@
+[
+	{ "id": "javascript", "label": "JavaScript", "domain": "languages", "depth": 3, "tools": ["es2023+"], "projects": ["chatify", "thumbnailgen", "mern-auth"] },
+	{ "id": "typescript", "label": "TypeScript", "domain": "languages", "depth": 2, "tools": [], "projects": ["chatify"] },
+	{ "id": "python", "label": "Python", "domain": "languages", "depth": 3, "tools": ["numpy"], "projects": ["tata-steel-vision"] },
+	{ "id": "cpp", "label": "C++", "domain": "languages", "depth": 2, "tools": ["dsa — 500+ problems"], "projects": [] },
+
+	{ "id": "react", "label": "React", "domain": "web", "depth": 3, "tools": [], "projects": ["chatify", "thumbnailgen", "mern-auth"] },
+	{ "id": "nodejs", "label": "Node.js", "domain": "web", "depth": 3, "tools": ["express"], "projects": ["chatify", "thumbnailgen", "mern-auth"] },
+	{ "id": "socketio", "label": "Socket.IO", "domain": "web", "depth": 2, "tools": ["websockets"], "projects": ["chatify"] },
+	{ "id": "zustand", "label": "Zustand", "domain": "web", "depth": 1, "tools": [], "projects": ["chatify"] },
+	{ "id": "jwt", "label": "JWT / Auth", "domain": "web", "depth": 2, "tools": ["refresh rotation"], "projects": ["chatify", "mern-auth"] },
+	{ "id": "sveltekit", "label": "SvelteKit", "domain": "web", "depth": 2, "tools": ["this site"], "projects": [] },
+	{ "id": "tailwind", "label": "Tailwind", "domain": "web", "depth": 2, "tools": ["this site"], "projects": [] },
+
+	{ "id": "yolov10", "label": "YOLOv10", "domain": "ml-vision", "depth": 2, "tools": ["pytorch"], "projects": ["tata-steel-vision"] },
+	{ "id": "bytetrack", "label": "ByteTrack", "domain": "ml-vision", "depth": 1, "tools": [], "projects": ["tata-steel-vision"] },
+	{ "id": "opencv", "label": "OpenCV", "domain": "ml-vision", "depth": 2, "tools": [], "projects": ["tata-steel-vision"] },
+	{ "id": "llm", "label": "LLMs / RAG", "domain": "ml-vision", "depth": 1, "tools": ["active research — see /lab"], "projects": [] },
+
+	{ "id": "mongodb", "label": "MongoDB", "domain": "data", "depth": 3, "tools": ["mongoose", "indexing"], "projects": ["chatify", "thumbnailgen", "mern-auth"] },
+
+	{ "id": "cloudflare", "label": "Cloudflare", "domain": "cloud", "depth": 1, "tools": ["pages", "workers"], "projects": [] },
+	{ "id": "arcjet", "label": "Arcjet", "domain": "cloud", "depth": 1, "tools": ["rate limiting"], "projects": ["chatify"] }
+]

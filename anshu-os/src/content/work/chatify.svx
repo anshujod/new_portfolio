@@ -1,0 +1,57 @@
+---
+title: Chatify
+status: DEPLOYED
+summary: Real-time messaging with websocket delivery, JWT auth, and rate limiting that survives strangers on the internet.
+stack:
+  - Socket.IO
+  - JWT
+  - Zustand
+  - MongoDB
+  - Arcjet
+metrics:
+  - websocket delivery — no polling, no refresh
+  - IP-based rate limiting via Arcjet
+  - JWT auth with protected socket handshakes
+repo: https://github.com/anshuprakash
+order: 2
+---
+
+<!-- TODO(anshu): verify repo + demo URLs, add user/message counts if you track them -->
+
+## The problem
+
+A chat app is a deceptively hard "simple" project: the happy path is a weekend, but presence, reconnection, auth on a long-lived connection, and abuse resistance are where most implementations quietly cheat. Chatify is a real-time messenger built to not cheat.
+
+## Architecture
+
+- **Socket.IO** over websockets for message delivery and presence — no polling fallbacks in practice, but graceful degradation is free with the library.
+- **JWT auth on the handshake**: the socket connection itself is authenticated, not just the REST routes. An expired token means no socket, not a silent ghost session.
+- **Zustand** on the client for socket + message state. Small enough to read in one sitting, no boilerplate reducers around something as simple as "append message."
+- **MongoDB** for message history and user data, indexed on conversation + timestamp for fast history pagination.
+
+```ts
+// socket auth — the connection is the perimeter
+io.use((socket, next) => {
+	const token = socket.handshake.auth.token;
+	try {
+		socket.data.user = jwt.verify(token, env.JWT_SECRET);
+		next();
+	} catch {
+		next(new Error('unauthorized'));
+	}
+});
+```
+
+## The part most chat apps skip: abuse
+
+Anything with a public message box gets abused. **Arcjet** sits in front of the API for IP-based rate limiting — signup floods and message spam get cut off before they reach business logic. This pattern (cheap edge rejection before expensive work) later became the template for the rate limiting on this site's own AI endpoint.
+
+## Decisions & tradeoffs
+
+- **Online status via socket lifecycle**, not heartbeat polling — simpler, and good enough at this scale. At larger scale you'd want a presence service with TTLs.
+- **History over the REST API, live messages over the socket.** Mixing both through the socket made pagination awkward; splitting them kept each path simple.
+
+## What broke and what I'd change
+
+- Reconnection raced with history fetch, occasionally duplicating the last message in the UI. Fixed by deduplicating on message id at the store boundary — the lesson: make the client idempotent instead of trusting delivery semantics.
+- I'd add message delivery receipts (sent/delivered) — the data model supports it, the UI never got it.

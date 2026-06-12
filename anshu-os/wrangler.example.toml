@@ -1,0 +1,9 @@
+# Cloudflare Pages config — copy to wrangler.toml (or set the AI binding in the Pages dashboard).
+# Kept as .example because the local build has no Cloudflare auth for the [ai] remote binding.
+# Deploy: npx wrangler pages deploy .svelte-kit/cloudflare
+name = "anshu-os"
+compatibility_date = "2026-06-01"
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+[ai]
+binding = "AI"
