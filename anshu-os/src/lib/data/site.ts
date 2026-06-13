@@ -5,7 +5,7 @@ export const site = {
 	role: 'Full-Stack Engineer / Applied AI',
 	tagline: 'ships production software · trains vision models · building toward autonomous systems',
 	location: 'Bengaluru, IN',
-	url: 'https://anshu.dev',
+	url: 'https://anshu-os.pages.dev',
 	email: 'anshuprakash55@gmail.com',
 	links: {
 		github: 'https://github.com/anshujod',
