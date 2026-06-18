@@ -75,7 +75,7 @@
 
 		{#if data.related.length}
 			<section class="mx-auto mt-16 max-w-[var(--prose-max)]">
-				<p class="eyebrow mb-4">~/log/related</p>
+				<p class="eyebrow mb-4">~/related</p>
 				<div class="border-t border-hairline/60">
 					{#each data.related as rel (rel.slug)}
 						<PostRow post={rel} />

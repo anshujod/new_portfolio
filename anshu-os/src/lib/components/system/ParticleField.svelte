@@ -3,8 +3,8 @@
 	import { page } from '$app/state';
 	import type { FieldHandle } from '$lib/three/field';
 
-	// 7% ambient everywhere; dims to 3% inside the blog reader.
-	const opacity = $derived(/^\/log\/./.test(page.url.pathname) ? 0.03 : 0.07);
+	// 5% ambient everywhere; dims to 2.5% inside the blog reader. Texture, not effect.
+	const opacity = $derived(/^\/log\/./.test(page.url.pathname) ? 0.025 : 0.05);
 
 	let canvasEl: HTMLCanvasElement | undefined = $state();
 	let mode = $state<'none' | 'webgl' | 'static'>('none');

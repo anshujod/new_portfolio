@@ -58,6 +58,13 @@ body {
 	line-height: 1.6;
 }
 
+/* Even line lengths on headings; fewer orphans in long prose. */
+h1,
+h2,
+h3 {
+	text-wrap: balance;
+}
+
 ::selection {
 	background: var(--signal);
 	color: var(--void);

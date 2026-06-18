@@ -4,7 +4,8 @@
 	import type { TerminalLine } from '$lib/terminal/commands';
 
 	const welcome: TerminalLine[] = [
-		{ text: 'anshu.os command palette — type help for commands', kind: 'out' }
+		{ text: 'anshu.os — a portfolio that runs like an operating system.', kind: 'out' },
+		{ text: 'type help, or a command: open work · cat resume · open lab', kind: 'out' }
 	];
 
 	function onkeydown(e: KeyboardEvent) {

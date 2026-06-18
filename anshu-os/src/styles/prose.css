@@ -29,6 +29,7 @@
 
 .prose p {
 	margin: 1.25em 0;
+	text-wrap: pretty;
 }
 
 .prose strong {

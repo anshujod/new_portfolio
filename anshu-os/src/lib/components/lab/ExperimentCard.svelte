@@ -12,7 +12,7 @@
 	};
 </script>
 
-<article class="flex flex-col rounded-lg border border-hairline bg-panel p-5 transition-colors duration-150 hover:border-pulse/40">
+<article class="flex flex-col rounded-lg border border-hairline bg-panel p-5 transition-all duration-150 hover:border-pulse hover:bg-panel-up hover:shadow-[0_0_0_1px_var(--pulse),0_0_32px_var(--pulse-glow)]">
 	<header class="flex items-center justify-between font-mono text-[length:var(--text-mono)] tracking-[0.05em] uppercase">
 		<span class="text-ink-faint">exp/{experiment.id}</span>
 		<span class="flex items-center gap-1.5 normal-case" style="color: {statusColor[experiment.status]}">

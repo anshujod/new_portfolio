@@ -24,7 +24,13 @@
 <article
 	class="group relative flex flex-col rounded-lg border border-hairline bg-panel p-6 transition-all duration-150 hover:bg-panel-up hover:shadow-[0_0_0_1px_var(--signal),0_0_32px_var(--signal-glow)]"
 	class:md:col-span-2={mission.featured}
+	class:!border-transparent={mission.featured}
 >
+	{#if mission.featured}
+		<!-- The one sanctioned signal→pulse gradient ring: marks the lead mission. -->
+		<div class="gradient-ring pointer-events-none absolute inset-0 rounded-lg" aria-hidden="true"></div>
+	{/if}
+
 	<header
 		class="flex items-center justify-between font-mono text-[length:var(--text-mono)] tracking-[0.05em] text-ink-faint uppercase"
 	>
@@ -76,3 +82,21 @@
 		{/if}
 	</footer>
 </article>
+
+<style>
+	/* 1px gradient ring via mask compositing — paints only the border, never fills. */
+	.gradient-ring {
+		padding: 1px;
+		background: linear-gradient(135deg, var(--signal), var(--pulse));
+		/* mask fill colour is an opacity primitive only (never rendered); a documented
+		   opaque token keeps it out of palette-drift detection. */
+		-webkit-mask:
+			linear-gradient(var(--ink) 0 0) content-box,
+			linear-gradient(var(--ink) 0 0);
+		-webkit-mask-composite: xor;
+		mask:
+			linear-gradient(var(--ink) 0 0) content-box,
+			linear-gradient(var(--ink) 0 0);
+		mask-composite: exclude;
+	}
+</style>

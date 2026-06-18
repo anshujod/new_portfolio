@@ -30,7 +30,7 @@
 />
 
 <section class="mx-auto max-w-[var(--content-max)] px-6 py-24">
-	<SectionHeader path="~/lab/experiments" title="AI Lab" level={1} />
+	<SectionHeader path="~/lab" title="AI Lab" level={1} live />
 
 	<p class="mb-10 max-w-xl text-ink-dim">
 		Two kinds of entries live here: <span class="font-mono text-[length:var(--text-mono)] text-trace">deployed experiments</span> you can poke at right now, and
@@ -41,7 +41,7 @@
 		<AskAnshu />
 	</div>
 
-	<h2 class="eyebrow mt-16 mb-6">~/lab/log</h2>
+	<h2 class="eyebrow mt-16 mb-6">~/experiments</h2>
 	<div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
 		{#each data.experiments as experiment (experiment.id)}
 			<ExperimentCard {experiment} lastCommit={freshness[experiment.id] ?? null} />

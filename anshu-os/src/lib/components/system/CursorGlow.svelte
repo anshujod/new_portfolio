@@ -26,7 +26,7 @@
 		const loop = () => {
 			x += (tx - x) * 0.12;
 			y += (ty - y) * 0.12;
-			if (glowEl) glowEl.style.transform = `translate3d(${x - 300}px, ${y - 300}px, 0)`;
+			if (glowEl) glowEl.style.transform = `translate3d(${x - 220}px, ${y - 220}px, 0)`;
 			raf = requestAnimationFrame(loop);
 		};
 
@@ -42,8 +42,8 @@
 {#if active}
 	<div
 		bind:this={glowEl}
-		class="pointer-events-none fixed top-0 left-0 -z-10 h-[600px] w-[600px]"
-		style="background: radial-gradient(circle, var(--signal-glow) 0%, transparent 60%); opacity: 0.5"
+		class="pointer-events-none fixed top-0 left-0 -z-10 h-110 w-110"
+		style="background: radial-gradient(circle, var(--signal-glow) 0%, transparent 62%); opacity: 0.22"
 		aria-hidden="true"
 	></div>
 {/if}

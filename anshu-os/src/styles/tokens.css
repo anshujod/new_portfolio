@@ -17,6 +17,7 @@
 	--signal: #4d7cff; /* electric blue: interactive, links, focus */
 	--signal-glow: #4d7cff26; /* 15% alpha for glows/halos */
 	--pulse: #b86eff; /* neon purple: AI/Lab contexts ONLY */
+	--pulse-glow: #b86eff26; /* 15% alpha — pulse hover halo, AI/Lab only */
 	--trace: #41e2d8; /* cyan: data, metrics, terminal output ONLY */
 	--alert: #ff6e5e; /* errors in terminal, sparingly */
 
@@ -54,6 +55,7 @@
 	--color-signal: var(--signal);
 	--color-signal-glow: var(--signal-glow);
 	--color-pulse: var(--pulse);
+	--color-pulse-glow: var(--pulse-glow);
 	--color-trace: var(--trace);
 	--color-alert: var(--alert);
 

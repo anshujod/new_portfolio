@@ -20,7 +20,7 @@
 />
 
 <section class="mx-auto max-w-[var(--content-max)] px-6 py-24">
-	<SectionHeader path="~/log/entries" title="System Logs" level={1} />
+	<SectionHeader path="~/logs" title="System Logs" level={1} />
 
 	<div class="mb-8 flex flex-wrap gap-2 font-mono text-[length:var(--text-mono)]">
 		<button

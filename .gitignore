@@ -1,0 +1,6 @@
+# Impeccable design skill: machine-local settings + vendored tool.
+# Reinstall the skill any time with `npx impeccable install`.
+.claude/
+
+# Impeccable machine-local config (kept out of version control by design).
+.impeccable/config.local.json
