@@ -31,12 +31,6 @@
 		const id = setInterval(() => (localTime = clockFmt.format(new Date())), 1000);
 		return () => clearInterval(id);
 	});
-
-	// Proof signals as label/value pairs — value carries the data color, label stays neutral.
-	const signals = site.ticker.map((t) => {
-		const [label, ...rest] = t.split(':');
-		return { label: label.trim(), value: rest.join(':').trim() };
-	});
 </script>
 
 <Seo
@@ -92,17 +86,6 @@
 			<span aria-hidden="true">·</span>
 			<a href={site.links.github} class="text-ink-dim transition-colors duration-150 hover:text-signal">github ↗</a>
 		</p>
-
-		<dl
-			class="mt-14 flex flex-wrap gap-x-10 gap-y-4 border-t border-hairline/60 pt-6 font-mono text-[length:var(--text-mono)]"
-		>
-			{#each signals as s (s.label)}
-				<div class="flex flex-col gap-0.5">
-					<dt class="tracking-[0.05em] text-ink-faint uppercase">{s.label}</dt>
-					<dd class="text-[length:var(--text-ui)] text-trace tabular-nums">{s.value}</dd>
-				</div>
-			{/each}
-		</dl>
 	</div>
 </section>
 

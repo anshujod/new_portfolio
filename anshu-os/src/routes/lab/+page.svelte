@@ -26,7 +26,7 @@
 
 <Seo
 	title="lab"
-	description="AI Lab — a live RAG chatbot you can interrogate, plus in-progress research: football prediction models and agent experiments."
+	description="AI Lab — a live RAG chatbot you can interrogate, plus in-progress research: applied ML and agent experiments."
 />
 
 <section class="mx-auto max-w-[var(--content-max)] px-6 py-24">

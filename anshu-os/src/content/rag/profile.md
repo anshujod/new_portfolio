@@ -11,7 +11,7 @@ Anshu Prakash Hindoyar is a full-stack engineer and applied AI developer based i
 
 ## Current work
 
-Anshu works on Azilora, production software with 200+ active users, where he has shipped and maintained 20+ features as a full-stack engineer. He is currently going deep on LLMs, agents, and retrieval systems — including a football prediction engine for the 2026 World Cup being built in public, using Monte Carlo simulation over an ensemble of Poisson, XGBoost, LightGBM and Elo models.
+Anshu interned at Azilora Technologies as a full-stack engineer (January–April 2026), working on production software with 200+ active users, where he shipped and maintained 20+ features. He is going deep on LLMs, agents, and retrieval systems, and has shipped a World Cup 2026 prediction engine — a stacked ML ensemble (Poisson, XGBoost, LightGBM, Elo with a logistic meta-learner and Platt calibration) run through 10,000-tournament Monte Carlo simulation, backtested on three prior World Cups.
 
 ## Computer vision at Tata Steel
 
@@ -23,7 +23,7 @@ Chatify is a real-time messaging app: Socket.IO over websockets, JWT-authenticat
 
 ## Skills
 
-Languages: JavaScript, TypeScript, Python, C++. Web: React, Node.js, Express, Socket.IO, SvelteKit, Tailwind. ML and vision: YOLOv10, ByteTrack, OpenCV, PyTorch; currently learning LLM engineering and RAG. Data: MongoDB. Infra: Cloudflare Pages and Workers, Arcjet.
+Languages: JavaScript, TypeScript, Python, C++. Web: React, Node.js, Express, Socket.IO, SvelteKit, Tailwind. ML and vision: YOLOv10, ByteTrack, OpenCV, PyTorch, scikit-learn, XGBoost, LightGBM, Monte Carlo simulation; currently learning LLM engineering and RAG. Data: MongoDB. Infra: Cloudflare Pages and Workers, Arcjet.
 
 ## Problem solving and achievements
 
@@ -31,7 +31,7 @@ Languages: JavaScript, TypeScript, Python, C++. Web: React, Node.js, Express, So
 
 ## Is he good at football analytics yet?
 
-Honestly: in progress. The World Cup prediction engine is active research — the models run (10,000-tournament Monte Carlo simulations with an ensemble of Poisson, XGBoost, LightGBM and Elo), but it has not been validated against a real tournament yet. That is why it lives in the lab and not on the missions page.
+Getting there, and now with evidence. The World Cup 2026 prediction engine is a stacked ensemble — Poisson, XGBoost, LightGBM and Elo, combined by a logistic meta-learner with Platt calibration — run through 10,000-tournament Monte Carlo simulation. It is backtested on the 2014, 2018 and 2022 World Cups: on that 192-match holdout the calibrated ensemble scores 55.7% accuracy and a 0.216 RPS skill score over a uniform baseline. It is deployed on a Streamlit dashboard and ships as a mission on this site. The honest caveat: it has not been validated against the 2026 tournament yet, because that tournament is the test set no one has.
 
 ## This website
 

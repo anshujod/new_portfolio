@@ -12,7 +12,7 @@ metrics:
   - email verification and password reset
   - reused as the auth layer in later projects
 repo: https://github.com/anshuprakash
-order: 4
+order: 5
 ---
 
 <!-- TODO(anshu): verify repo URL; add email provider (resend/nodemailer/etc.) to stack if you want -->
