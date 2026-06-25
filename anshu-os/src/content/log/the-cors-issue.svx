@@ -1,0 +1,123 @@
+---
+title: "The CORS issue"
+date: 2026-02-04
+category: Engineering
+summary: Why a request sails through Postman but dies in the browser — origins, the same-origin policy, CORS headers, and the silent preflight OPTIONS call, traced from the MDN docs up.
+---
+
+So I was working on a web dev project and ran into the error everyone eventually meets: a **CORS error**. What does a developer in 2026 do? Screenshot the console, paste it into ChatGPT, ask "how do I fix this?" I did exactly that and the error went away — but I was curious *why* the same request worked in Postman and failed in the browser. So I went to the MDN docs and worked out what's actually happening. Here's the summary.
+
+CORS stands for **Cross-Origin Resource Sharing**. The "resource sharing" part is in the name — but what is an *origin*?
+
+## Origins: scheme, host, port
+
+Say you have a React app running at `http://localhost:3000`. That URL is a tuple of three parts:
+
+- `http` — the **scheme**
+- `localhost` — the **host**
+- `3000` — the **port**
+
+The scheme is usually `http` or `https`, the host is the name, and the port is the port the app runs on. Change any one of these and the browser treats it as a **different origin**.
+
+## The same-origin policy: the real villain
+
+Before CORS even enters the picture, there's the **same-origin policy**: the browser blocks a web page from *reading* responses from another origin.
+
+Why? Because without it, a malicious site could:
+
+- read your bank data,
+- steal your cookies,
+- steal your identity.
+
+So the browser's default is: **"no cross-origin access unless explicitly allowed."** That's where CORS comes in.
+
+## So what is CORS really?
+
+CORS is not an error. It's a browser mechanism that lets the *server* say: *"Hey browser, it's okay — I trust this origin."*
+
+The important detail: **CORS is enforced by the browser, not the server.** Your backend doesn't "block" the request — the **browser blocks the response** when CORS rules are violated.
+
+## Why it works in Postman but not the browser
+
+This was the "aha" moment. Postman, curl, and backend services **do not enforce CORS** — they just send HTTP requests. Browsers enforce the same-origin policy and CORS rules.
+
+So in Postman the request goes through and you see the response. In the browser, the request may still reach the server, but **the browser blocks your code from reading the response.**
+
+## A concrete example
+
+Frontend on `http://localhost:3000`, backend on `http://localhost:5000`. The frontend calls:
+
+```js
+fetch("http://localhost:5000/api/users");
+```
+
+The browser thinks: *"Different port = different origin. I need permission."* So it checks the response headers. If the backend doesn't send:
+
+```
+Access-Control-Allow-Origin: http://localhost:3000
+```
+
+the browser blocks the response and you get a CORS error. Here's the correct fix in an Express server:
+
+```js
+import cors from "cors";
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true
+  })
+);
+```
+
+You *can* open it to everyone with `Access-Control-Allow-Origin: *` — but never in production, because it:
+
+- lets **any** website call your API,
+- **can't** be used with cookies or credentials,
+- weakens your whole security model.
+
+## Preflight requests: the silent extra call
+
+Sometimes the browser sends **two** requests instead of one. The first is a **preflight** — an automatic `OPTIONS` request sent *before* the real call. Its job is simple: *"Hey server, before I send the real request — are you okay with this?"*
+
+A preflight is triggered when:
+
+- the method is `PUT`, `PATCH`, or `DELETE`,
+- custom headers are used (e.g. `Authorization`),
+- the body is JSON (`Content-Type: application/json`),
+- cookies or credentials are included.
+
+So if the frontend sends:
+
+```js
+fetch("http://localhost:5000/api/users/1", {
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name: "Anshu" })
+});
+```
+
+the browser does **not** send it immediately. First it sends:
+
+```
+OPTIONS /api/users/1
+Origin: http://localhost:3000
+Access-Control-Request-Method: PUT
+Access-Control-Request-Headers: Content-Type
+```
+
+For the real request to proceed, the server must respond with:
+
+```
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+Access-Control-Allow-Headers: Content-Type
+```
+
+If the server approves, the browser sends the real `PUT`. If not, it stops right there and you see a CORS error. In other words: **if the server doesn't handle the `OPTIONS` request correctly, the actual API call is never sent.**
+
+## Final thoughts: CORS is not the enemy
+
+CORS feels like a random browser error, but it's a deliberate security feature — protecting users every time they open a site. Almost all the confusion comes from one misunderstanding: **the server isn't blocking your request, the browser is.**
+
+Once you understand what an origin is, why the same-origin policy exists, how CORS headers act as explicit permissions, and why preflight requests happen, CORS stops being mysterious and starts being predictable.

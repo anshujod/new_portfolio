@@ -7,7 +7,7 @@ title: About Anshu
 
 ## Identity
 
-Anshu Prakash Hindoyar is a full-stack engineer and applied AI developer based in Bengaluru, India. He studied Electronics and Communication Engineering (B.E. ECE) at Ramaiah Institute of Technology, starting in 2022. Contact: anshuprakash55@gmail.com.
+Anshu Prakash Hindoyar is a full-stack engineer and applied AI developer based in Bengaluru, India. He was born on 11 October 2003 (date of birth 11 October 2003), and his age is 22 — he is 22 years old. He studied Electronics and Communication Engineering (B.E. ECE) at Ramaiah Institute of Technology, starting in 2022. Contact: anshuprakash55@gmail.com.
 
 ## Current work
 
@@ -19,11 +19,11 @@ His strongest applied-AI credential: a people detection and counting system for 
 
 ## Products shipped
 
-Chatify is a real-time messaging app: Socket.IO over websockets, JWT-authenticated socket handshakes, Zustand state, MongoDB history, and Arcjet IP rate limiting. AI ThumbnailGen turns prompts into thumbnail candidates for creators, with a credit system as a cost circuit-breaker and server-side prompt assembly. The MERN Auth System is a production-grade authentication layer — access plus refresh token rotation with family tracking, httpOnly cookies, email verification, password reset — reused as the auth seed in his later projects.
+Chatify is a real-time messaging app: Socket.IO over websockets, JWT-authenticated socket handshakes, Zustand state, MongoDB history, and Arcjet IP rate limiting. AI ThumbnailGen turns prompts into thumbnail candidates for creators, with a credit system as a cost circuit-breaker and server-side prompt assembly. The MERN Auth System is a production-grade authentication layer — access plus refresh token rotation with family tracking, httpOnly cookies, email verification, password reset — reused as the auth seed in his later projects. Quiz App is a cross-platform quiz platform — a React web client, a React Native (Expo) mobile app, and an Express + Supabase backend — with role-based auth, timed gameplay, leaderboards, image and video questions, and web-push notifications.
 
-## Skills
+## Skills and tech stack
 
-Languages: JavaScript, TypeScript, Python, C++. Web: React, Node.js, Express, Socket.IO, SvelteKit, Tailwind. ML and vision: YOLOv10, ByteTrack, OpenCV, PyTorch, scikit-learn, XGBoost, LightGBM, Monte Carlo simulation; currently learning LLM engineering and RAG. Data: MongoDB. Infra: Cloudflare Pages and Workers, Arcjet.
+What is Anshu good at? Here is the full list of technologies and tech stacks he has worked with. Languages: JavaScript, TypeScript, Python, C++. Frontend and mobile: React, React Native, Expo, SvelteKit, Vite, Tailwind CSS, and PWAs. Backend: Node.js, Express, Socket.IO and WebSockets, REST APIs, and JWT authentication. Machine learning and computer vision: PyTorch, scikit-learn, XGBoost, LightGBM, YOLOv10, ByteTrack, OpenCV, Elo ratings, Poisson models, Monte Carlo simulation, and SHAP. LLMs and AI engineering: retrieval-augmented generation (RAG), embeddings, BM25, and Cloudflare Workers AI. Databases and storage: MongoDB and Supabase (Postgres, auth, storage). Cloud and infrastructure: Cloudflare Pages and Workers, Vercel, Streamlit, and Arcjet for rate limiting. He is currently going deeper on LLM engineering, agents, and retrieval systems.
 
 ## Problem solving and achievements
 

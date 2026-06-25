@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { retrieve, indexMode, type Chunk } from '$lib/server/rag/retrieve';
+import { retrieve, indexMode, conciseAnswer, type Chunk } from '$lib/server/rag/retrieve';
 import { rateLimit } from '$lib/server/ratelimit';
 import type { RequestHandler } from './$types';
 
@@ -15,18 +15,20 @@ interface AiBinding {
 
 const MAX_MESSAGES = 4; // context window sent to the model
 const MAX_MESSAGE_CHARS = 500;
-const MAX_TOKENS = 512;
+const MAX_TOKENS = 700;
 const CHAT_MODEL = '@cf/meta/llama-3.1-8b-instruct';
 const EMBED_MODEL = '@cf/baai/bge-base-en-v1.5';
 
 const systemPrompt = (context: string) =>
-	`You are the "Ask About Me" assistant on the portfolio site of Anshu Prakash Hindoyar (ANSHU.OS).
-Answer questions about Anshu — his work, projects, skills, and background — using ONLY the context below.
+	`You are the "Ask About Me" assistant on Anshu Prakash Hindoyar's portfolio (ANSHU.OS).
+Answer questions about Anshu — his background, skills, tech stack, projects, and experience — using the context below.
 Rules:
-- If the context doesn't contain the answer, say you don't know and suggest asking something about his projects or experience. Never invent facts.
+- Ground every answer in the context. If a specific fact isn't there, say you don't know and point them to his projects or skills. Never invent specifics.
+- When asked what he knows, his tech stack, or to list his technologies or projects, give a COMPLETE answer from the context — name every relevant item, grouped sensibly. Don't be vague or give only a couple of examples.
+- For other questions, keep it concise (2-4 sentences).
+- Plain text only, no markdown headings; short bullet lists are fine for enumerations.
 - Be honest about what is in progress vs. shipped; understatement beats overstatement.
-- Keep answers short: 2-4 sentences, plain text, no markdown headings.
-- Refuse off-topic requests (general coding help, news, anything not about Anshu) in one polite sentence.
+- Politely decline off-topic requests (general coding help, news, anything not about Anshu) in one sentence.
 
 Context:
 ${context}`;
@@ -38,22 +40,19 @@ interface ChatMessage {
 
 const sse = (data: string) => `data: ${data}\n\n`;
 
-/** Dev / no-binding fallback: stream a canned-but-useful answer built from retrieval. */
-function offlineStream(chunks: Chunk[]): ReadableStream<Uint8Array> {
-	const intro =
-		chunks.length > 0
-			? `(offline mode — the model runs on Cloudflare Workers AI in production. Retrieved context:)\n\n${chunks
-					.map((c) => `▸ ${c.source}: ${c.text.slice(0, 160)}…`)
-					.join('\n')}`
-			: "(offline mode) I couldn't find anything relevant in the index — try asking about Anshu's projects, skills, or the Tata Steel work.";
-	const words = intro.split(/(?<= )/);
+/** No-LLM fallback: answer straight from the retrieved context. Used in dev, and
+ *  in production if the Workers AI binding is missing or the model call fails — so
+ *  the user still gets accurate indexed info instead of an error. */
+function fallbackStream(query: string, chunks: Chunk[]): ReadableStream<Uint8Array> {
+	const answer = conciseAnswer(query, chunks);
+	const words = answer.split(/(?<= )/);
 	const encoder = new TextEncoder();
 	let i = 0;
 	return new ReadableStream({
 		async pull(controller) {
 			if (i < words.length) {
 				controller.enqueue(encoder.encode(sse(JSON.stringify({ response: words[i++] }))));
-				await new Promise((r) => setTimeout(r, 12));
+				await new Promise((r) => setTimeout(r, 8));
 			} else {
 				controller.enqueue(encoder.encode(sse('[DONE]')));
 				controller.close();
@@ -120,7 +119,7 @@ export const POST: RequestHandler = async ({ request, platform, getClientAddress
 		Connection: 'keep-alive'
 	};
 
-	if (!ai) return new Response(offlineStream(chunks), { headers });
+	if (!ai) return new Response(fallbackStream(lastUser.content, chunks), { headers });
 
 	try {
 		const stream = (await ai.run(CHAT_MODEL, {
@@ -130,6 +129,7 @@ export const POST: RequestHandler = async ({ request, platform, getClientAddress
 		})) as ReadableStream<Uint8Array>;
 		return new Response(stream, { headers });
 	} catch {
-		return json({ error: 'model unavailable — try again shortly' }, { status: 502 });
+		// model hiccup — degrade to the indexed answer rather than erroring out
+		return new Response(fallbackStream(lastUser.content, chunks), { headers });
 	}
 };

@@ -82,7 +82,7 @@ export const indexMode = rag.mode;
  * Top-k chunks for a query. Pass `queryVector` (from bge-base-en-v1.5) when the
  * index is vector mode and an AI binding is available; otherwise BM25 is used.
  */
-export function retrieve(query: string, queryVector?: number[], k = 4): Chunk[] {
+export function retrieve(query: string, queryVector?: number[], k = 6): Chunk[] {
 	const scores =
 		rag.mode === 'vector' && queryVector ? cosineScores(queryVector) : bm25Scores(query);
 	return scores
@@ -91,4 +91,53 @@ export function retrieve(query: string, queryVector?: number[], k = 4): Chunk[] 
 		.slice(0, k)
 		.filter((s) => s.score > 0)
 		.map((s) => rag.chunks[s.i]);
+}
+
+const STOP = new Set(
+	'a an the is are was were be been am being of to in on for and or but with as at by from this that these those it its he she his her him they them you your our do does did can could would should will what which who whom when where why how about into over under out up off so just also more most any all me my his'.split(
+		' '
+	)
+);
+
+/**
+ * No-LLM fallback answer: pull the most query-relevant sentences from the top
+ * chunks (idf-weighted) so the reply stays on point instead of dumping whole
+ * chunks. Broad "list everything / tech stack" questions return the full top chunk.
+ */
+export function conciseAnswer(query: string, chunks: Chunk[]): string {
+	if (!chunks.length)
+		return "I couldn't find that in what's indexed about Anshu — try asking about his tech stack, his projects, or his experience.";
+
+	// enumeration intent → a whole chunk is the right level of detail
+	if (
+		/\b(all|every|everything|full|list|stacks?|tech|technolog\w*|skills?|frameworks?|languages?|tools?)\b/i.test(
+			query
+		)
+	)
+		return chunks[0].text;
+
+	const state = (bm25 ??= buildBm25());
+	const n = state.docs.length;
+	const idf = (t: string) => {
+		const dfc = state.df.get(t) ?? 0;
+		return Math.log(1 + (n - dfc + 0.5) / (dfc + 0.5));
+	};
+	const qterms = [...new Set(tokenize(query))].filter((t) => t.length > 1 && !STOP.has(t));
+
+	const scored: { s: string; score: number }[] = [];
+	for (const c of chunks.slice(0, 3)) {
+		for (const raw of c.text.split(/(?<=[.!?])\s+/)) {
+			const s = raw.trim();
+			if (s.length < 20) continue;
+			const toks = new Set(tokenize(s));
+			let score = 0;
+			for (const t of qterms) if (toks.has(t)) score += idf(t);
+			if (score > 0) scored.push({ s, score });
+		}
+	}
+	scored.sort((a, b) => b.score - a.score);
+	const picked = scored.slice(0, 2).map((x) => x.s);
+	return picked.length
+		? picked.join(' ')
+		: chunks[0].text.split(/(?<=[.!?])\s+/).slice(0, 2).join(' ');
 }

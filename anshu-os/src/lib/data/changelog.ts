@@ -28,15 +28,15 @@ export const changelog: ChangelogEntry[] = [
 		label: 'vision module online',
 		summary: 'Tata Steel: YOLOv10, ByteTrack, 15k-image dataset',
 		detail:
-			'Applied computer vision in a running steel plant — people detection and counting on live CCTV. The real lesson was dataset iteration; see the case study.',
+			'Applied computer vision in a running steel plant — people detection and counting on live CCTV. The real lesson was dataset iteration — most of the gains came from the data, not the model.',
 		badges: ['field-tested']
 	},
 	{
 		version: 'v2025.x',
 		label: 'products in the wild',
-		summary: 'Chatify, ThumbnailGen, auth systems',
+		summary: 'Chatify, ThumbnailGen, a quiz platform, auth systems',
 		detail:
-			'Three MERN products built and deployed: real-time messaging, an AI image product, and an auth layer good enough to reuse everywhere since.'
+			'Full-stack products built and deployed: real-time messaging, an AI image product, a cross-platform quiz platform (React web + React Native mobile on Supabase), and an auth layer good enough to reuse everywhere since.'
 	},
 	{
 		version: 'v2026.1',

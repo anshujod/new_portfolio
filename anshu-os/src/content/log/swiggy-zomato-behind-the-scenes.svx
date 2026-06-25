@@ -1,0 +1,127 @@
+---
+title: "What really happens when you place an order on Swiggy/Zomato"
+date: 2026-04-02
+category: Engineering
+summary: One tap on "Place Order" fires off a real-time distributed system — API gateways, Kafka event streams, rider matching, and live tracking — and how it survives duplicate taps, payment failures, and rider drop-offs.
+---
+
+Ordering food on Swiggy or Zomato feels effortless. You open the app, scroll through restaurants, pick your dishes, tap **Place Order**, and within minutes you can watch a delivery partner move toward your home in real time.
+
+It feels simple. In reality, that one tap triggers a distributed system that behaves like a real-time logistics company — routing decisions, payments, and location streams, all within milliseconds. Let's walk through what actually happens.
+
+## High-level architecture (simplified)
+
+When you place an order, the request doesn't hit a single backend server. It first passes through an **API gateway** — the platform's entry point — which routes it to the **Order Service** that creates and manages orders. The service generates a unique **order ID**, stores the order in a distributed database built for scale, and the order enters the `PLACED` state.
+
+## Why events, not direct calls
+
+Instead of tightly coupling services, modern architectures lean on **events**. The Order Service emits an event saying a new order was created, published to an event-streaming platform like **Kafka** — an **event-driven architecture** that decouples services and scales well. Many services can then react independently.
+
+The benefits:
+
+- loose coupling between services,
+- independent scalability,
+- fault isolation,
+- real-time processing pipelines,
+- easier addition of new features.
+
+## From kitchen to doorstep
+
+The restaurant system subscribes to order events. Once notified, it estimates cooking time and **accepts or rejects** the order. If accepted, another event moves the workflow forward — and the logistics engine takes over.
+
+Assigning a delivery partner means weighing several signals in real time:
+
+- distance between rider and restaurant,
+- rider availability and workload,
+- traffic conditions,
+- predicted delivery time,
+- regional demand patterns.
+
+Advanced platforms may use greedy matching algorithms, optimization models, and ML-based ETA prediction. Once a rider is assigned, the system publishes another event — and that's when the experience becomes visible to you.
+
+The delivery partner's app then continuously streams GPS updates — latitude/longitude, speed and direction, route progress — through real-time infrastructure built on:
+
+- Kafka (the event-streaming backbone),
+- WebSockets or gRPC connections,
+- Redis for low-latency caching,
+- map services such as Google Maps.
+
+That's what powers live map tracking, dynamic ETA updates, and route recalculation. The simple moving dot on your map is the output of a sophisticated real-time data pipeline.
+
+Meanwhile the order moves through a lifecycle:
+
+`PLACED → ACCEPTED → PREPARING → PICKED_UP → ON_THE_WAY → DELIVERED`
+
+These transitions are managed by a distributed **state machine** driven by events, and each change is broadcast so dependent services stay in sync.
+
+## Handling real-world failures
+
+So far, the happy path. Real systems rarely behave perfectly — and a production system has to handle failure without breaking the experience.
+
+### 1. Duplicate orders (idempotency)
+
+Users don't behave "perfectly," and neither does the network. The classic case: you tap **Place Order**, nothing seems to happen, so you tap again. And maybe again.
+
+The fix is **idempotency** — making sure the same request, even sent multiple times, produces one result:
+
+- generate a unique **idempotency key** (on the client or server),
+- attach it to the order request,
+- on the backend, check the key before processing.
+
+If a request with the same key arrives again, return the previous result instead of creating a new order. Same request → same response → no duplicates.
+
+### 2. Payment failures
+
+Payments are the trickiest part — real money, external gateways, multiple services to keep in sync. Two edge cases matter:
+
+- **Payment succeeds, but order creation fails.** The user is charged with no order to show for it. Fix: **retry order creation using the same transaction ID**, so you complete the order without double-charging.
+- **Order is created, but payment fails.** Now there's an order with no successful payment. Fix: trigger an **auto-cancel workflow** that cancels after a timeout or failed confirmation.
+
+This is less about *preventing* failures (impossible) and more about handling them gracefully — without losing money or breaking trust.
+
+### 3. Restaurant rejection
+
+Not every order makes it through, and that's normal in a marketplace. Restaurants reject for load, item availability, or operational reasons. Handled cleanly:
+
+- the order moves immediately to `CANCELLED`,
+- a **refund is triggered asynchronously** so it doesn't block the main flow,
+- the user is **notified instantly** so they can reorder elsewhere.
+
+### 4. Delivery partner drop-offs
+
+Rider cancellations are inevitable — vehicle issues, traffic, personal reasons. When a rider cancels after assignment:
+
+- the system immediately **re-matches** to find a new partner,
+- the order's **priority is raised** to avoid further delay,
+- the **ETA is recalculated** and updated live.
+
+From your side, the order should still feel on track even though there was a hiccup. This is where a smart dispatch system earns its keep — react fast, rebalance supply, keep things moving.
+
+## Consistency vs availability
+
+In a distributed system nothing is free; there's always a trade-off between **consistency** and **availability**. The trick is knowing where you need strict guarantees and where you don't:
+
+- **Order status → eventual consistency.** A slight delay in `preparing → out for delivery` is fine; the system converges.
+- **Live tracking → eventual consistency.** Tracking doesn't need millisecond accuracy; a few seconds' delay is acceptable if it keeps things scalable.
+- **Payments → strong consistency.** With money there's no room for ambiguity — no duplicates, no inconsistencies.
+
+The idea: **be strict where correctness matters, flexible where latency and scale matter more.**
+
+## Scaling the system
+
+Past a few thousand users, things break in interesting ways. At peak, Swiggy and Zomato handle millions of orders a day, thousands of concurrent restaurant interactions, and continuous GPS streams. "Add more servers" doesn't cut it — the system is designed for scale from the ground up:
+
+- **Horizontal scaling** — many instances of each service behind a **load balancer**, instead of one bigger server.
+- **Database sharding** — partition data (by user ID or region) so a single database isn't the bottleneck.
+- **Caching with Redis** — serve hot data like menus and order status from cache to cut read latency.
+- **Event queues** — Kafka or RabbitMQ absorb lunch and dinner spikes and process them asynchronously.
+
+Distribute the load, avoid single points of failure, and design for spikes — not averages.
+
+## Final thoughts
+
+What looks like a simple **Place Order** button is anything but. Behind that one tap is a distributed system making real-time decisions, handling failures, and operating at massive scale — all in milliseconds.
+
+The real insight isn't just *how* these systems work, but *how they're designed*: good systems don't assume things will go right, they assume things will fail and plan for it. They lean on asynchronous, event-driven workflows, trade strict consistency where they can afford to, and keep the user experience smooth no matter what.
+
+So next time you watch that tiny dot move on the map, you're not just tracking a delivery — you're watching a complex real-time system quietly do its job.

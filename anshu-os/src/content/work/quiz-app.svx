@@ -1,0 +1,68 @@
+---
+title: Quiz App
+status: DEPLOYED
+summary: A cross-platform quiz platform — React web, React Native (Expo) mobile, and an Express + Supabase backend — with role-based auth, timed gameplay, leaderboards, and web-push notifications.
+stack:
+  - TypeScript
+  - React
+  - React Native
+  - Expo
+  - Supabase
+  - Express
+metrics:
+  - cross-platform — React web + React Native (Expo) mobile
+  - Supabase backend — auth · postgres · storage
+  - role-based auth, timed quizzes, leaderboard, web push
+repo: https://github.com/anshujod/Quiz_Mobile_App
+demo: https://quiz-app-5jzx.vercel.app
+order: 2
+---
+
+<!-- TODO(anshu): add real usage numbers (quizzes played, users) if you track them -->
+
+## The problem
+
+A quiz app is a deceptively broad project: it only works if accounts, roles, content authoring, timed gameplay, scoring, a leaderboard, and notifications all work together — and it has to run on both the web and a phone. Quiz App is that whole surface, built as one project spanning a web client, a mobile client, and a backend.
+
+## One codebase, three runtimes
+
+The repo is a monorepo: three apps over a single Supabase backend.
+
+- **frontend** — a React + Vite web client, PWA-enabled so it installs like an app.
+- **mobile** — a React Native + Expo app sharing the same data model and auth.
+- **backend** — a small Express service whose only job is delivering web-push notifications.
+- **Supabase** — authentication, a Postgres database, and file storage in one managed layer.
+
+Putting auth and data in Supabase means the web and mobile clients read and write the same source of truth. The Express service exists only for the one thing Supabase doesn't do for me — sending push.
+
+## Two roles, one system
+
+- **Admins** author quizzes — questions, options, and image or video media — then publish or delete them, and can see registered users.
+- **Users** browse published quizzes, play them against a timer, and get a score saved to their history, plus a leaderboard and notifications.
+
+```ts
+// role-gated access (simplified): admins author, users play
+const { data: profile } = await supabase
+  .from('profiles')
+  .select('role')
+  .eq('id', user.id)
+  .single();
+
+if (profile?.role !== 'admin') throw new Error('admins only');
+```
+
+## Notifications: the one job for a server
+
+Because Supabase covers auth, data, and storage, the only reason to run a server at all is web push. The Express service holds the VAPID private key and pushes notifications to subscribed clients — keeping that secret off the web and mobile bundles, where it has no business living.
+
+## Decisions & tradeoffs
+
+- **Supabase over a hand-rolled backend.** Auth, Postgres, and storage in one service let the app spend its time on quiz logic instead of plumbing. The trade is leaning on a managed platform and treating Row Level Security as the real authorization boundary.
+- **Separate web and mobile clients, shared backend.** Rather than one React Native Web build, the web (React/Vite) and mobile (Expo) are distinct apps — each gets a platform-native feel, at the cost of some duplicated UI code.
+- **A tiny Express service, not a second backend.** It does exactly one thing (push), so it stays small and cheap to run.
+
+## What I'd change
+
+- Lift the duplicated client logic into a shared TypeScript package both apps import.
+- Push authorization fully into Supabase Row Level Security, so the rules live next to the data rather than in client and route checks.
+- Add real-time multiplayer quizzes over Supabase Realtime — the scoring model already supports it.

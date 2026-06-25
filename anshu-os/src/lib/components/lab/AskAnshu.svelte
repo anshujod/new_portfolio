@@ -8,8 +8,8 @@
 	}
 
 	const suggestions = [
-		'What did he build at Tata Steel?',
-		'Strongest backend work?',
+		"What's Anshu's full tech stack?",
+		'Tell me about the World Cup prediction engine',
 		'Is he actually good at football analytics yet?'
 	];
 
