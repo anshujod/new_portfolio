@@ -13,7 +13,7 @@ metrics:
   - IP-based rate limiting via Arcjet
   - JWT auth with protected socket handshakes
 repo: https://github.com/anshuprakash
-order: 2
+order: 3
 ---
 
 <!-- TODO(anshu): verify repo + demo URLs, add user/message counts if you track them -->

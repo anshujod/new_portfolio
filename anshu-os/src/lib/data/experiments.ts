@@ -24,16 +24,6 @@ export const experiments: Experiment[] = [
 		repo: null
 	},
 	{
-		id: 'wc26-engine',
-		title: 'World Cup 2026 prediction engine',
-		status: 'IN DEVELOPMENT',
-		hypothesis:
-			'An ensemble of Poisson, XGBoost, LightGBM and Elo models, run through 10,000-tournament Monte Carlo simulation, can produce calibrated championship probabilities.',
-		notes:
-			'Squad ingestion pipeline and simulation dashboard are running; validation against real tournament outcomes is the open question — which is why this is a lab entry, not a mission.',
-		repo: null
-	},
-	{
 		id: 'agents',
 		title: 'Agent experiments',
 		status: 'PLANNED',

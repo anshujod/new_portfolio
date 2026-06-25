@@ -1,0 +1,64 @@
+---
+title: World Cup 2026 Prediction Engine
+status: DEPLOYED
+summary: A stacked ML ensemble — Poisson, XGBoost, LightGBM and Elo — run through 10,000 Monte Carlo tournament simulations to forecast the 2026 World Cup, backtested on three prior cups.
+stack:
+  - Python
+  - XGBoost
+  - LightGBM
+  - scikit-learn
+  - Streamlit
+metrics:
+  - 10,000-run Monte Carlo over all 48 teams
+  - stacked ensemble — Poisson · XGBoost · LightGBM · Elo
+  - backtested on WC 2014/18/22 — 0.216 RPS skill score
+repo: https://github.com/anshujod/fifa
+order: 2
+---
+
+<!-- TODO(anshu): add the Streamlit Community Cloud demo URL as `demo:` in the frontmatter -->
+
+## The problem
+
+Predicting a 48-team World Cup is a calibration problem wearing a prediction problem's clothes. Football is low-scoring and high-variance — the favourite loses often enough that a single "who wins" guess is close to useless. What's actually useful is a probability that's honest: if the model says a team wins 30% of the time, it should win about 30% of the time. So the engine isn't built to be right about the winner; it's built to be calibrated about how likely each outcome is, then to carry that uncertainty all the way through a tournament bracket.
+
+## The ensemble
+
+No single model earns trust on its own, so each match outcome is four views stacked together:
+
+- A **Poisson goal model** fits per-team attack/defence strengths and samples scorelines, which gives win/draw/loss probabilities with the right shape for a low-scoring sport.
+- **XGBoost** and **LightGBM** classifiers each read a 37-feature match representation — Elo, time-decayed form, rolling xG, head-to-head, squad value/age/caps, confederation, World Cup experience, match context — trained on internationals since 1990.
+- A **logistic-regression meta-learner** stacks the three, trained out-of-fold so no base model grades its own homework, with **Platt scaling** on top to pull the final probabilities back onto empirical frequencies.
+
+Elo runs alongside as both a feature and a sanity check, with tournament-weighted K-factors (32 for World Cups, 20 for qualifiers, 10 for friendlies) so a friendly never moves a rating like a final does.
+
+```python
+# one tournament, simulated 10,000 times (multiprocessing)
+def simulate_tournament(models):
+    groups = play_group_stage(models)          # 12 groups, ensemble per match
+    standings = rank(groups)                    # pts, GD, GF, head-to-head
+    qualified = top_two(standings) + best_thirds(standings, n=8)
+    return play_knockouts(qualified, models)    # incl. penalty shootouts
+
+champions = Counter(simulate_tournament(models) for _ in range(10_000))
+```
+
+## Why simulate instead of just predicting
+
+Rating a single match doesn't tell you who lifts the trophy — seven knockout rounds of variance sit between the group stage and the final. So the whole tournament is run **10,000 times**: each pass plays every group match through the ensemble, resolves standings by FIFA's tiebreakers, advances the best four third-placed teams, and plays the knockouts through a simulated final, penalty shootouts included. Championship and per-stage odds are the aggregate, reported with Wilson 95% confidence intervals so the dashboard never shows a number more precise than the sample earns.
+
+## Does it actually work?
+
+The honest answer this site insists on: backtested, not yet validated on 2026. On a 192-match holdout of the 2014, 2018 and 2022 World Cups, the calibrated ensemble scores 55.7% accuracy, 0.914 log loss, and a 0.190 ranked probability score — an RPS skill score of **0.216** over a uniform baseline. RPS, not accuracy, is the number I trust here: it rewards being calibrated rather than confident. (LightGBM posts gaudier figures in-sample; those are optimistically biased, and the out-of-sample backtest is the one that counts.) The 2026 run is live on a Streamlit dashboard — the tournament itself is the test set I don't have yet.
+
+## Decisions & tradeoffs
+
+- **Calibration over accuracy.** Platt scaling slightly lowers raw accuracy and meaningfully improves RPS and log loss. For a betting-shaped problem, a well-calibrated 60% beats an overconfident 75%.
+- **Stacking over picking a favourite model.** The meta-learner consistently beat its best single base learner out-of-fold — ensembling bought robustness, not just a fractional metric bump.
+- **Data was the ceiling.** Squad features (market value, caps, top-league share) and time-decayed form moved the needle more than hyperparameter tuning — SHAP confirmed Elo difference and squad value dominate the importances.
+
+## What broke and what I'd change
+
+- Early backtests **leaked**: features computed over the full history let the model peek at the future. Fixed with strict temporal cutoffs per match — accuracy dropped, which was the whole point.
+- Third-place advancement is fiddly. FIFA's "best four of six" rule needed its own tiebreak logic, and an early version advanced the wrong teams in tight groups.
+- Next: an automatic calibration check on every retrain, and replacing the static squad snapshots with an agent that reconciles roster changes on its own — which is exactly what's queued next in the lab.

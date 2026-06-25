@@ -101,7 +101,6 @@ export const commands: Command[] = [
 		run: () => [
 			out(`${site.name} ${site.version} — ${site.location.toLowerCase()}`),
 			out(`role:    ${site.role.toLowerCase()}`),
-			...site.ticker.map((t) => out(`metric:  ${t}`)),
 			accent('status:  ONLINE')
 		]
 	},

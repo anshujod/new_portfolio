@@ -41,16 +41,17 @@ export const changelog: ChangelogEntry[] = [
 	{
 		version: 'v2026.1',
 		label: 'production mode',
-		summary: 'Azilora: 200+ users, 20+ shipped features',
+		summary: 'Azilora Technologies — full-stack engineering intern',
 		detail:
-			'Full-stack engineering on production software with real users — shipping, supporting, and maintaining 20+ features for 200+ active users.'
+			'Four-month internship (Jan–Apr 2026): full-stack engineering on production software with real users — shipped, supported, and maintained 20+ features for 200+ active users.',
+		badges: ['Jan–Apr 2026']
 	},
 	{
 		version: 'v2026.x',
 		label: 'current branch',
 		summary: 'LLMs, agents, retrieval — see /lab',
 		detail:
-			'Going deep on language models: retrieval pipelines, agent architectures, and a football prediction engine being built in public. The lab tracks what is real.',
+			'Going deep on language models: retrieval pipelines, agent architectures, and applied ML — including a World Cup 2026 prediction engine, now shipped as a mission. The lab tracks what is still in progress.',
 		badges: ['in development']
 	}
 ];

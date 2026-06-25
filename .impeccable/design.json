@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-18T00:00:00.000Z",
+  "title": "Design System: ANSHU.OS",
+  "extensions": {
+    "colorMeta": {
+      "signal": { "role": "primary", "displayName": "Signal Blue", "canonical": "#4d7cff", "tonalRamp": ["#0c1330", "#16225c", "#1f3488", "#2a4ab8", "#3a63e0", "#4d7cff", "#7d9eff", "#aec3ff"] },
+      "pulse": { "role": "secondary", "displayName": "Lab Purple", "canonical": "#b86eff", "tonalRamp": ["#1f1030", "#33165c", "#4d2088", "#6b2fb8", "#9148e0", "#b86eff", "#cf9bff", "#e3c5ff"] },
+      "trace": { "role": "secondary", "displayName": "Trace Cyan", "canonical": "#41e2d8", "tonalRamp": ["#062320", "#0a3a36", "#0f5650", "#147a72", "#1ea99e", "#41e2d8", "#82eee7", "#bdf6f1"] },
+      "alert": { "role": "tertiary", "displayName": "Alert Coral", "canonical": "#ff6e5e", "tonalRamp": ["#2e1010", "#5c1d18", "#882a22", "#b8392d", "#e0503f", "#ff6e5e", "#ff9a8e", "#ffc5bd"] },
+      "void": { "role": "neutral", "displayName": "Void", "canonical": "#050507", "tonalRamp": ["#050507", "#0a0b10", "#10121a", "#161927", "#232738", "#3a4159", "#7d83a0", "#e8eaf2"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero name only — once per page." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles (h2)." },
+      "title": { "displayName": "Title", "purpose": "Card and mission titles (h3)." },
+      "body": { "displayName": "Body", "purpose": "Prose and UI text; 65–75ch measure." },
+      "label": { "displayName": "Label / System Voice", "purpose": "Mono paths, eyebrows, metrics, terminal." }
+    },
+    "shadows": [
+      { "name": "interactive-glow", "value": "0 0 0 1px var(--signal), 0 0 32px var(--signal-glow)", "purpose": "Hover/focus halo on interactive cards and CTAs. Never a resting state." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default exit/entrance easing — exponential ease-out, no bounce." },
+      { "name": "ease-inout", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "Symmetric transitions, view-transition wipe." },
+      { "name": "dur-fast", "value": "160ms", "purpose": "Hover/state feedback." },
+      { "name": "dur-base", "value": "400ms", "purpose": "Reveals and standard transitions." },
+      { "name": "dur-slow", "value": "900ms", "purpose": "Boot sequence, large orchestrated moments." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "content-max", "value": "1200px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Terminal-style CTA with a leading accent glyph; border and glow appear on hover.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\"><span class=\"ds-caret\">&gt;</span> view work</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; background: #10121a; color: #e8eaf2; border: 1px solid #232738; border-radius: 8px; padding: 12px 20px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.9375rem; text-decoration: none; transition: border-color 160ms cubic-bezier(0.22,1,0.36,1), box-shadow 160ms cubic-bezier(0.22,1,0.36,1); } .ds-btn-primary .ds-caret { color: #4d7cff; } .ds-btn-primary:hover { border-color: #4d7cff; box-shadow: 0 0 0 1px #4d7cff, 0 0 32px #4d7cff26; } .ds-btn-primary:focus-visible { outline: 2px solid #4d7cff; outline-offset: 2px; }"
+    },
+    {
+      "name": "Mission Card",
+      "kind": "card",
+      "refersTo": "card-mission",
+      "description": "Project card led by a mono status header, status dot, title, cyan metrics, and bracketed footer actions.",
+      "html": "<article class=\"ds-mission\"><header class=\"ds-mission-h\"><span>MISSION-01 · DEPLOYED</span><span class=\"ds-status\"><i></i> live</span></header><h3 class=\"ds-mission-t\">Tata Steel Vision</h3><p class=\"ds-mission-s\">YOLOv10 people-counting deployed on the plant floor.</p><p class=\"ds-mission-stack\">── python · yolov10 · opencv ──</p><ul class=\"ds-mission-m\"><li><span class=\"ds-arrow\">▸</span> <span class=\"ds-metric\">98.2% precision</span></li></ul><footer class=\"ds-mission-f\"><span class=\"ds-link\">[ case study ]</span> <span class=\"ds-link-dim\">[ github ]</span></footer></article>",
+      "css": ".ds-mission { display: flex; flex-direction: column; background: #10121a; border: 1px solid #232738; border-radius: 8px; padding: 24px; color: #e8eaf2; transition: background 150ms, border-color 150ms, box-shadow 150ms; } .ds-mission:hover { background: #161927; border-color: #4d7cff; box-shadow: 0 0 0 1px #4d7cff, 0 0 32px #4d7cff26; } .ds-mission-h { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem; letter-spacing: 0.05em; text-transform: uppercase; color: #7d83a0; } .ds-status { display: inline-flex; align-items: center; gap: 6px; text-transform: none; } .ds-status i { width: 6px; height: 6px; border-radius: 9999px; background: #41e2d8; display: inline-block; } .ds-mission-t { margin: 16px 0 4px; font-family: 'Clash Display', sans-serif; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; } .ds-mission-s { color: #98a0b8; } .ds-mission-stack, .ds-mission-m { font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem; color: #7d83a0; margin-top: 16px; } .ds-metric { color: #41e2d8; } .ds-mission-f { margin-top: 24px; font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem; } .ds-link { color: #4d7cff; } .ds-link-dim { color: #7d83a0; }"
+    },
+    {
+      "name": "Nav Bar",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Fixed translucent top bar with mono logo/breadcrumb, route links, and a ⌘K palette button.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-brand\" href=\"#\">anshu.os <span class=\"ds-crumb\">▸ ~/work</span></a><nav class=\"ds-navlinks\"><a href=\"#\" class=\"ds-active\">/work</a><a href=\"#\">/lab</a><a href=\"#\">/log</a><button class=\"ds-cmdk\">⌘K</button></nav></header>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 24px; background: rgba(5,5,7,0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(35,39,56,0.6); font-family: 'JetBrains Mono', monospace; font-size: 0.8125rem; } .ds-brand { color: #e8eaf2; text-decoration: none; } .ds-crumb { color: #7d83a0; } .ds-navlinks { display: flex; align-items: center; gap: 4px; } .ds-navlinks a { color: #98a0b8; text-decoration: none; padding: 6px 12px; border-radius: 4px; transition: color 150ms, background 150ms; } .ds-navlinks a:hover { color: #e8eaf2; background: #10121a; } .ds-navlinks a.ds-active { color: #4d7cff; } .ds-cmdk { margin-left: 12px; background: transparent; color: #7d83a0; border: 1px solid #232738; border-radius: 4px; padding: 4px 8px; cursor: pointer; transition: color 150ms, border-color 150ms; } .ds-cmdk:hover { color: #4d7cff; border-color: #4d7cff; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A developer's real home, presented as a working operating system.",
+    "overview": "ANSHU.OS is a personal portfolio that takes one metaphor seriously: the site is a system built by the engineer, not a brochure about him. The metaphor is grounded, never theatrical — it earns its place by being functional (the ⌘K terminal genuinely navigates) rather than decorative. The personality is precise, engineered, understated-confident — the voice of well-architected software read by a skimming recruiter. Confidence is shown through restraint and craft, never volume. It explicitly rejects the generic AI/SaaS look: no decorative gradients, no gradient text, no glassmorphism, no neon glow smeared everywhere. The single biggest failure mode to police is 'black page + one neon accent.' Restraint is the flex.",
+    "keyCharacteristics": [
+      "Layered dark surfaces with a subtle blue-shift (depth, not flat black).",
+      "Monospace as the system voice — labels, paths, metrics, terminal, timestamps.",
+      "Strict accent discipline: blue = interactive, purple = AI/lab only, cyan = data only.",
+      "Sharp, minimal radii and hairline borders; color and glow appear on interaction, not at rest.",
+      "At most three loud moments (boot, constellation, terminal); everything else stays quiet."
+    ],
+    "rules": [
+      { "name": "The One Color Per Job Rule", "body": "Each accent owns exactly one meaning. Signal = interactive, Pulse = AI, Trace = data. Using cyan on a link or purple outside the lab breaks the information system and is forbidden.", "section": "colors" },
+      { "name": "The Two-Gradient Rule", "body": "Gradients exist in exactly two places site-wide: the 1px signal→pulse border on the featured mission card, and the boot-screen scanline. Nowhere else, and never as text fill.", "section": "colors" },
+      { "name": "The System Voice Rule", "body": "Monospace is reserved for system-register text: paths, labels, metrics, terminal, timestamps, code. Never body prose or headings.", "section": "typography" },
+      { "name": "The Display-Once Rule", "body": "The full-size display face appears once per page (the hero). Everywhere else steps down.", "section": "typography" },
+      { "name": "The Flat-At-Rest Rule", "body": "Surfaces are flat at rest; depth comes from the tonal ramp and hairlines. Glow is a response to state, never a default coat.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep accent discipline absolute: signal = interactive, pulse = AI/lab only, trace = data only.",
+      "Do convey depth through the tonal surface ramp and 1px hairlines, not drop shadows.",
+      "Do keep glow as a hover/focus response only — flat at rest.",
+      "Do keep monospace for system-register text and never for body prose.",
+      "Do verify ink-dim/ink-faint hit AA (≥4.5:1) on whatever surface they sit on.",
+      "Do give every animation a prefers-reduced-motion fallback and never gate content behind a motion-triggered reveal.",
+      "Do keep the loud moments to three: boot, constellation, terminal."
+    ],
+    "donts": [
+      "Don't ship the generic AI/SaaS template look. If a viewer could think 'AI made this,' it has failed.",
+      "Don't use purple-to-blue decorative gradients, gradient text, or glassmorphism-as-default.",
+      "Don't build identical icon+heading+text card grids or the hero-metric template.",
+      "Don't fall into 'black page + one neon accent.'",
+      "Don't use Inter or Space Grotesk.",
+      "Don't smear neon glow on resting elements or add side-stripe borders.",
+      "Don't let the OS metaphor become a costume — if a flourish is purely decorative, cut it."
+    ]
+  }
+}

@@ -12,7 +12,7 @@ metrics:
   - credit-based usage to cap generation cost
   - gallery + regeneration flow
 repo: https://github.com/anshuprakash
-order: 3
+order: 4
 ---
 
 <!-- TODO(anshu): confirm which image-generation API/model you used, repo + demo URLs, and any usage numbers -->

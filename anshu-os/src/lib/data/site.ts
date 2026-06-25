@@ -11,8 +11,7 @@ export const site = {
 		github: 'https://github.com/anshujod',
 		linkedin: 'https://www.linkedin.com/in/anshu-prakash-hindoyar-496a641b9/',
 		leetcode: 'https://leetcode.com/anshujod'
-	},
-	ticker: ['leetcode: 1657', 'users served: 200+', 'dataset curated: 15,000 imgs']
+	}
 } as const;
 
 export const nav = [

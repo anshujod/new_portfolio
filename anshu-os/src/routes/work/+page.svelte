@@ -12,7 +12,7 @@
 />
 
 <section class="mx-auto max-w-[var(--content-max)] px-6 py-24">
-	<SectionHeader path="~/work/deployed" title="Deployed Missions" level={1} />
+	<SectionHeader path="~/projects" title="Deployed Missions" level={1} />
 
 	<p class="mb-12 max-w-xl text-ink-dim">
 		Production software, framed honestly: <span class="font-mono text-[length:var(--text-mono)] text-trace">DEPLOYED</span> means a live demo exists,

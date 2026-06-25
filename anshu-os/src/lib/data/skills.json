@@ -1,7 +1,7 @@
 [
 	{ "id": "javascript", "label": "JavaScript", "domain": "languages", "depth": 3, "tools": ["es2023+"], "projects": ["chatify", "thumbnailgen", "mern-auth"] },
 	{ "id": "typescript", "label": "TypeScript", "domain": "languages", "depth": 2, "tools": [], "projects": ["chatify"] },
-	{ "id": "python", "label": "Python", "domain": "languages", "depth": 3, "tools": ["numpy"], "projects": ["tata-steel-vision"] },
+	{ "id": "python", "label": "Python", "domain": "languages", "depth": 3, "tools": ["numpy"], "projects": ["tata-steel-vision", "world-cup-2026-engine"] },
 	{ "id": "cpp", "label": "C++", "domain": "languages", "depth": 2, "tools": ["dsa — 500+ problems"], "projects": [] },
 
 	{ "id": "react", "label": "React", "domain": "web", "depth": 3, "tools": [], "projects": ["chatify", "thumbnailgen", "mern-auth"] },
@@ -16,6 +16,8 @@
 	{ "id": "bytetrack", "label": "ByteTrack", "domain": "ml-vision", "depth": 1, "tools": [], "projects": ["tata-steel-vision"] },
 	{ "id": "opencv", "label": "OpenCV", "domain": "ml-vision", "depth": 2, "tools": [], "projects": ["tata-steel-vision"] },
 	{ "id": "llm", "label": "LLMs / RAG", "domain": "ml-vision", "depth": 1, "tools": ["active research — see /lab"], "projects": [] },
+	{ "id": "ensemble-ml", "label": "XGBoost / LightGBM", "domain": "ml-vision", "depth": 2, "tools": ["scikit-learn", "stacked ensembles"], "projects": ["world-cup-2026-engine"] },
+	{ "id": "monte-carlo", "label": "Monte Carlo", "domain": "ml-vision", "depth": 2, "tools": ["10k-sim", "calibration"], "projects": ["world-cup-2026-engine"] },
 
 	{ "id": "mongodb", "label": "MongoDB", "domain": "data", "depth": 3, "tools": ["mongoose", "indexing"], "projects": ["chatify", "thumbnailgen", "mern-auth"] },
 
