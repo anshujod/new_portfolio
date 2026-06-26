@@ -41,6 +41,15 @@ function buildBm25(): Bm25State {
 	return { docs, df, avgdl };
 }
 
+// document frequencies over chunk TEXT only (no source labels) — used by the
+// fallback's idf so a word like "study" isn't diluted by every "case study:" label
+let textDf: Map<string, number> | null = null;
+function buildTextDf(): Map<string, number> {
+	const m = new Map<string, number>();
+	for (const c of rag.chunks) for (const t of new Set(tokenize(c.text))) m.set(t, (m.get(t) ?? 0) + 1);
+	return m;
+}
+
 function bm25Scores(query: string): number[] {
 	bm25 ??= buildBm25();
 	const { docs, df, avgdl } = bm25;
@@ -94,7 +103,7 @@ export function retrieve(query: string, queryVector?: number[], k = 6): Chunk[] 
 }
 
 const STOP = new Set(
-	'a an the is are was were be been am being of to in on for and or but with as at by from this that these those it its he she his her him they them you your our do does did can could would should will what which who whom when where why how about into over under out up off so just also more most any all me my his'.split(
+	'a an the is are was were be been am being of to in on for and or but with as at by from this that these those it its he she his her him they them you your our do does did can could would should will what which who whom when where why how about into over under out up off so just also more most any all me my his have has had having anshu anshus know knows get got make made want need there then than too very really actually like ever tell'.split(
 		' '
 	)
 );
@@ -108,36 +117,55 @@ export function conciseAnswer(query: string, chunks: Chunk[]): string {
 	if (!chunks.length)
 		return "I couldn't find that in what's indexed about Anshu — try asking about his tech stack, his projects, or his experience.";
 
-	// enumeration intent → a whole chunk is the right level of detail
-	if (
-		/\b(all|every|everything|full|list|stacks?|tech|technolog\w*|skills?|frameworks?|languages?|tools?)\b/i.test(
-			query
-		)
-	)
-		return chunks[0].text;
+	const sentencesOf = (text: string) =>
+		text
+			.split(/(?<=[.!?])\s+(?=[A-Z0-9])/)
+			.map((s) => s.trim())
+			.filter((s) => s.length >= 20);
 
-	const state = (bm25 ??= buildBm25());
-	const n = state.docs.length;
+	// tech-stack / skills questions → the canonical Skills chunk (the complete list),
+	// which BM25 length-normalisation can otherwise rank below shorter chunks
+	if (/\b(tech|technolog\w*|skills?|stacks?|frameworks?|languages?|tools?)\b/i.test(query)) {
+		const skills = chunks.find((c) => /skills and tech stack/i.test(c.source));
+		if (skills) return skills.text;
+	}
+
+	const tdf = (textDf ??= buildTextDf());
+	const n = rag.chunks.length;
 	const idf = (t: string) => {
-		const dfc = state.df.get(t) ?? 0;
+		const dfc = tdf.get(t) ?? 0;
 		return Math.log(1 + (n - dfc + 0.5) / (dfc + 0.5));
 	};
 	const qterms = [...new Set(tokenize(query))].filter((t) => t.length > 1 && !STOP.has(t));
+	const sentenceScore = (s: string) => {
+		const toks = new Set(tokenize(s));
+		let v = 0;
+		for (const t of qterms) if (toks.has(t)) v += idf(t);
+		return v;
+	};
 
-	const scored: { s: string; score: number }[] = [];
-	for (const c of chunks.slice(0, 3)) {
-		for (const raw of c.text.split(/(?<=[.!?])\s+/)) {
-			const s = raw.trim();
-			if (s.length < 20) continue;
-			const toks = new Set(tokenize(s));
-			let score = 0;
-			for (const t of qterms) if (toks.has(t)) score += idf(t);
-			if (score > 0) scored.push({ s, score });
+	// answer from the single chunk with the strongest matching sentence, so the reply
+	// stays coherent instead of stitching unrelated chunks together
+	let best = { ci: 0, score: -1 };
+	chunks.forEach((c, ci) => {
+		for (const s of sentencesOf(c.text)) {
+			const sc = sentenceScore(s);
+			if (sc > best.score) best = { ci, score: sc };
 		}
-	}
-	scored.sort((a, b) => b.score - a.score);
-	const picked = scored.slice(0, 2).map((x) => x.s);
-	return picked.length
-		? picked.join(' ')
-		: chunks[0].text.split(/(?<=[.!?])\s+/).slice(0, 2).join(' ');
+	});
+
+	// below a relevance floor the match is only common/filler words — don't guess
+	if (best.score < Math.log(5))
+		return "I don't have anything on that. I can only answer questions about Anshu — his work, projects, skills, and background. Try asking about his tech stack, the World Cup engine, the Quiz App, or his experience.";
+
+	// the 1–2 most query-relevant sentences from the best chunk, in original order
+	const sents = sentencesOf(chunks[best.ci].text);
+	return sents
+		.map((s, idx) => ({ s, idx, v: sentenceScore(s) }))
+		.filter((x) => x.v > 0)
+		.sort((a, b) => b.v - a.v)
+		.slice(0, 2)
+		.sort((a, b) => a.idx - b.idx)
+		.map((x) => x.s)
+		.join(' ');
 }

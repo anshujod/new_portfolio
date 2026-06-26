@@ -7,11 +7,15 @@ title: About Anshu
 
 ## Identity
 
-Anshu Prakash Hindoyar is a full-stack engineer and applied AI developer based in Bengaluru, India. He was born on 11 October 2003 (date of birth 11 October 2003), and his age is 22 — he is 22 years old. He studied Electronics and Communication Engineering (B.E. ECE) at Ramaiah Institute of Technology, starting in 2022. Contact: anshuprakash55@gmail.com.
+Anshu Prakash Hindoyar is a full-stack engineer and applied AI developer based in Bengaluru, India. He was born on 11 October 2003 (date of birth 11 October 2003), and his age is 22 — he is 22 years old. Contact: anshuprakash55@gmail.com.
+
+## Education
+
+Anshu's place of study is Ramaiah Institute of Technology (RIT), an engineering college in Bengaluru. He is studying for a Bachelor of Engineering (BE) degree in Electronics and Communication Engineering (ECE), which he started in 2022. His education is a BE in ECE from Ramaiah Institute of Technology in Bengaluru.
 
 ## Current work
 
-Anshu interned at Azilora Technologies as a full-stack engineer (January–April 2026), working on production software with 200+ active users, where he shipped and maintained 20+ features. He is going deep on LLMs, agents, and retrieval systems, and has shipped a World Cup 2026 prediction engine — a stacked ML ensemble (Poisson, XGBoost, LightGBM, Elo with a logistic meta-learner and Platt calibration) run through 10,000-tournament Monte Carlo simulation, backtested on three prior World Cups.
+Anshu's recent work experience: he interned at Azilora Technologies as a full-stack engineer (January–April 2026), working on production software with 200+ active users, where he shipped and maintained 20+ features. He is going deep on LLMs, agents, and retrieval systems, and has shipped a World Cup 2026 prediction engine — a stacked ML ensemble (Poisson, XGBoost, LightGBM, Elo with a logistic meta-learner and Platt calibration) run through 10,000-tournament Monte Carlo simulation, backtested on three prior World Cups.
 
 ## Computer vision at Tata Steel
 
@@ -23,7 +27,7 @@ Chatify is a real-time messaging app: Socket.IO over websockets, JWT-authenticat
 
 ## Skills and tech stack
 
-What is Anshu good at? Here is the full list of technologies and tech stacks he has worked with. Languages: JavaScript, TypeScript, Python, C++. Frontend and mobile: React, React Native, Expo, SvelteKit, Vite, Tailwind CSS, and PWAs. Backend: Node.js, Express, Socket.IO and WebSockets, REST APIs, and JWT authentication. Machine learning and computer vision: PyTorch, scikit-learn, XGBoost, LightGBM, YOLOv10, ByteTrack, OpenCV, Elo ratings, Poisson models, Monte Carlo simulation, and SHAP. LLMs and AI engineering: retrieval-augmented generation (RAG), embeddings, BM25, and Cloudflare Workers AI. Databases and storage: MongoDB and Supabase (Postgres, auth, storage). Cloud and infrastructure: Cloudflare Pages and Workers, Vercel, Streamlit, and Arcjet for rate limiting. He is currently going deeper on LLM engineering, agents, and retrieval systems.
+Anshu's complete tech stack — the technologies, languages, and frameworks he is good at and has worked with. Languages: JavaScript, TypeScript, Python, C++. Frontend and mobile: React, React Native, Expo, SvelteKit, Vite, Tailwind CSS, and PWAs. Backend: Node.js, Express, Socket.IO and WebSockets, REST APIs, and JWT authentication. Machine learning and computer vision: PyTorch, scikit-learn, XGBoost, LightGBM, YOLOv10, ByteTrack, OpenCV, Elo ratings, Poisson models, Monte Carlo simulation, and SHAP. LLMs and AI engineering: retrieval-augmented generation (RAG), embeddings, BM25, and Cloudflare Workers AI. Databases and storage: MongoDB and Supabase (Postgres, auth, storage). Cloud and infrastructure: Cloudflare Pages and Workers, Vercel, Streamlit, and Arcjet for rate limiting. He is currently going deeper on LLM engineering, agents, and retrieval systems.
 
 ## Problem solving and achievements
 
