@@ -16,7 +16,11 @@
 	{ "id": "yolov10", "label": "YOLOv10", "domain": "ml-vision", "depth": 2, "tools": ["pytorch"], "projects": [] },
 	{ "id": "bytetrack", "label": "ByteTrack", "domain": "ml-vision", "depth": 1, "tools": [], "projects": [] },
 	{ "id": "opencv", "label": "OpenCV", "domain": "ml-vision", "depth": 2, "tools": [], "projects": [] },
-	{ "id": "llm", "label": "LLMs / RAG", "domain": "ml-vision", "depth": 1, "tools": ["active research — see /lab"], "projects": [] },
+	{ "id": "llm", "label": "LLMs / RAG", "domain": "ml-vision", "depth": 2, "tools": ["langchain", "chroma", "this site's chatbot"], "projects": [] },
+	{ "id": "huggingface", "label": "Hugging Face", "domain": "ml-vision", "depth": 2, "tools": ["transformers", "ollama"], "projects": [] },
+	{ "id": "llm-apis", "label": "Frontier LLM APIs", "domain": "ml-vision", "depth": 2, "tools": ["openai", "claude", "gemini"], "projects": [] },
+	{ "id": "fine-tuning", "label": "Fine-tuning", "domain": "ml-vision", "depth": 1, "tools": ["lora", "qlora"], "projects": [] },
+	{ "id": "agents", "label": "Agentic AI", "domain": "ml-vision", "depth": 1, "tools": ["multi-agent pipelines", "tool use"], "projects": [] },
 	{ "id": "ensemble-ml", "label": "XGBoost / LightGBM", "domain": "ml-vision", "depth": 2, "tools": ["scikit-learn", "stacked ensembles"], "projects": ["world-cup-2026-engine"] },
 	{ "id": "monte-carlo", "label": "Monte Carlo", "domain": "ml-vision", "depth": 2, "tools": ["10k-sim", "calibration"], "projects": ["world-cup-2026-engine"] },
 

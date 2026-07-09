@@ -11,7 +11,7 @@ Anshu Prakash Hindoyar is a full-stack engineer and applied AI developer based i
 
 ## Education
 
-Anshu's place of study is Ramaiah Institute of Technology (RIT), an engineering college in Bengaluru. He is studying for a Bachelor of Engineering (BE) degree in Electronics and Communication Engineering (ECE), which he started in 2022. His education is a BE in ECE from Ramaiah Institute of Technology in Bengaluru.
+Anshu's place of study is Ramaiah Institute of Technology (RIT), an engineering college in Bengaluru. He is studying for a Bachelor of Engineering (BE) degree in Electronics and Communication Engineering (ECE), which he started in 2022. His education is a BE in ECE from Ramaiah Institute of Technology in Bengaluru. He has also completed the LLM Engineering course (Ed Donner's "LLM Engineering: Master AI and Large Language Models" on Udemy) — an eight-week hands-on program covering frontier model APIs and multimodality, open-source LLMs with Hugging Face and Ollama, retrieval-augmented generation, QLoRA fine-tuning, and building agentic AI systems.
 
 ## Current work
 
@@ -27,7 +27,7 @@ Chatify is a real-time messaging app: Socket.IO over websockets, JWT-authenticat
 
 ## Skills and tech stack
 
-Anshu's complete tech stack — the technologies, languages, and frameworks he is good at and has worked with. Languages: JavaScript, TypeScript, Python, C++. Frontend and mobile: React, React Native, Expo, SvelteKit, Vite, Tailwind CSS, and PWAs. Backend: Node.js, Express, Socket.IO and WebSockets, REST APIs, and JWT authentication. Machine learning and computer vision: PyTorch, scikit-learn, XGBoost, LightGBM, YOLOv10, ByteTrack, OpenCV, Elo ratings, Poisson models, Monte Carlo simulation, and SHAP. LLMs and AI engineering: retrieval-augmented generation (RAG), embeddings, BM25, and Cloudflare Workers AI. Databases and storage: MongoDB and Supabase (Postgres, auth, storage). Cloud and infrastructure: Cloudflare Pages and Workers, Vercel, Streamlit, and Arcjet for rate limiting. He is currently going deeper on LLM engineering, agents, and retrieval systems.
+Anshu's complete tech stack — the technologies, languages, and frameworks he is good at and has worked with. Languages: JavaScript, TypeScript, Python, C++. Frontend and mobile: React, React Native, Expo, SvelteKit, Vite, Tailwind CSS, and PWAs. Backend: Node.js, Express, Socket.IO and WebSockets, REST APIs, and JWT authentication. Machine learning and computer vision: PyTorch, scikit-learn, XGBoost, LightGBM, YOLOv10, ByteTrack, OpenCV, Elo ratings, Poisson models, Monte Carlo simulation, and SHAP. LLMs and AI engineering: retrieval-augmented generation (RAG), embeddings, BM25, Cloudflare Workers AI, frontier model APIs (OpenAI, Anthropic Claude, Google Gemini), Hugging Face transformers, open-source models with Ollama, LangChain, Chroma vector database, Gradio, LoRA/QLoRA fine-tuning, and agentic AI (multi-agent pipelines with tool use). Databases and storage: MongoDB and Supabase (Postgres, auth, storage). Cloud and infrastructure: Cloudflare Pages and Workers, Vercel, Streamlit, and Arcjet for rate limiting. He is currently going deeper on LLM engineering, agents, and retrieval systems.
 
 ## Problem solving and achievements
 

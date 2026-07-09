@@ -51,7 +51,7 @@ export const changelog: ChangelogEntry[] = [
 		label: 'current branch',
 		summary: 'LLMs, agents, retrieval — see /lab',
 		detail:
-			'Going deep on language models: retrieval pipelines, agent architectures, and applied ML — including a World Cup 2026 prediction engine, now shipped as a mission. The lab tracks what is still in progress.',
-		badges: ['in development']
+			'Going deep on language models: completed an eight-week LLM engineering course — frontier APIs, Hugging Face, RAG, QLoRA fine-tuning, agents — plus retrieval pipelines and applied ML, including a World Cup 2026 prediction engine, now shipped as a mission. The lab tracks what is still in progress.',
+		badges: ['in development', 'llm engineering certified']
 	}
 ];
