@@ -1,4 +1,5 @@
 import { site } from '$lib/data/site';
+import { overclock } from '$lib/stores/overclock.svelte';
 
 export type LineKind = 'cmd' | 'out' | 'err' | 'accent';
 
@@ -11,6 +12,10 @@ export interface CommandContext {
 	navigate: (path: string) => void;
 	openExternal: (url: string) => void;
 	clear: () => void;
+	/** append a line to the transcript immediately (for long-running commands) */
+	print: (line: TerminalLine) => void;
+	/** replace the text of the last printed line (for streaming output) */
+	update: (text: string) => void;
 }
 
 export interface Command {
@@ -18,7 +23,7 @@ export interface Command {
 	description: string;
 	/** completions for the first argument */
 	argOptions?: string[];
-	run: (args: string[], ctx: CommandContext) => TerminalLine[];
+	run: (args: string[], ctx: CommandContext) => TerminalLine[] | Promise<TerminalLine[]>;
 }
 
 const out = (text: string): TerminalLine => ({ text, kind: 'out' });
@@ -114,6 +119,119 @@ export const commands: Command[] = [
 		]
 	},
 	{
+		name: 'ask',
+		description: 'query the rag bot — ask what stack does anshu use?',
+		run: async (args, ctx) => {
+			const question = args.join(' ').trim();
+			if (!question) return [err('usage: ask <question about anshu>')];
+			ctx.print(accent('→ retrieving from index…'));
+			try {
+				const res = await fetch('/api/ask', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ messages: [{ role: 'user', content: question }] })
+				});
+				if (!res.ok) {
+					const data = await res.json().catch(() => ({ error: `error ${res.status}` }));
+					return [err(String(data.error ?? `error ${res.status}`))];
+				}
+				ctx.print(out(''));
+				let answer = '';
+				const reader = res.body!.getReader();
+				const decoder = new TextDecoder();
+				let buffer = '';
+				for (;;) {
+					const { done, value } = await reader.read();
+					if (done) break;
+					buffer += decoder.decode(value, { stream: true });
+					const events = buffer.split('\n\n');
+					buffer = events.pop() ?? '';
+					for (const event of events) {
+						const data = event.replace(/^data: /, '').trim();
+						if (!data || data === '[DONE]') continue;
+						try {
+							const token = (JSON.parse(data) as { response?: string }).response;
+							if (token) {
+								answer += token;
+								ctx.update(answer);
+							}
+						} catch {
+							// partial/keepalive lines are fine to skip
+						}
+					}
+				}
+				return answer ? [] : [err('empty response — try the chat on /lab')];
+			} catch {
+				return [err('connection lost — try again, or use the chat on /lab')];
+			}
+		}
+	},
+	{
+		name: 'neofetch',
+		description: 'system information',
+		run: () => {
+			const uptimeYears = Math.floor(
+				(Date.now() - new Date('2003-10-11').getTime()) / (365.25 * 24 * 3600 * 1000)
+			);
+			const art = [
+				'      ▄▀▄      ',
+				'     ▄▀ ▀▄     ',
+				'    ▄▀▄▄▄▀▄    ',
+				'   ▄▀     ▀▄   ',
+				'  ▀▀▀     ▀▀▀  ',
+				'               ',
+				'               ',
+				'               ',
+				'               '
+			];
+			const info = [
+				`anshu@os`,
+				`─────────────────────────────`,
+				`os:      ${site.name} ${site.version} (${site.location.toLowerCase()})`,
+				`kernel:  B.E. ECE (ramaiah) — self-taught userland`,
+				`uptime:  ${uptimeYears} years, zero unplanned reboots`,
+				`shell:   full-stack — MERN · sveltekit · react native`,
+				`gpu:     yolov10 + bytetrack (field-tested at tata steel)`,
+				`llm:     rag · agents · qlora — this terminal has 'ask'`,
+				`editor:  vim (still inside, send help)`
+			];
+			return [
+				out(''),
+				...art.map((a, i) => out(`${a}${info[i] ?? ''}`)),
+				accent(`  status:  ONLINE — open to interesting work`),
+				out('')
+			];
+		}
+	},
+	{
+		name: 'uptime',
+		description: 'how long this system has been running',
+		run: () => {
+			const days = Math.floor((Date.now() - new Date('2003-10-11').getTime()) / 86400000);
+			return [
+				out(`up ${days} days — load average: shipping, learning, 500+ dsa problems`),
+				accent('no downtime scheduled.')
+			];
+		}
+	},
+	{
+		name: 'fortune',
+		description: 'lessons learned the hard way',
+		run: () => {
+			const fortunes = [
+				'hard frames are worth more than easy frames. — tata steel dataset log',
+				'most of the accuracy gains came from the data, not the model.',
+				'make the client idempotent instead of trusting delivery semantics. — chatify postmortem',
+				'RPS, not accuracy — reward calibration, not confidence. — world cup engine',
+				'the happy path is a weekend. presence, reconnection and abuse resistance are the project.',
+				'understatement beats overstatement. every claim on this site is downloadable.',
+				'the tournament is the test set no one has.',
+				'understand the layer below the one you work in. — ECE first principles'
+			];
+			return [out(fortunes[Math.floor(Math.random() * fortunes.length)])];
+		}
+	},
+	{
 		name: 'clear',
 		description: 'clear the terminal',
 		run: (_args, ctx) => {
@@ -124,13 +242,25 @@ export const commands: Command[] = [
 	{
 		name: 'sudo',
 		description: 'escalate privileges',
-		run: (args) =>
-			args.join(' ') === 'hire-me'
-				? [
-						accent('privilege escalation approved.'),
-						out(`forwarding to ${site.email} — or just: connect --mail`)
-					]
-				: [err('anshu is not in the sudoers file. this incident will be reported.')]
+		argOptions: ['hire-me', 'overclock'],
+		run: (args) => {
+			const target = args.join(' ');
+			if (target === 'hire-me')
+				return [
+					accent('privilege escalation approved.'),
+					out(`forwarding to ${site.email} — or just: connect --mail`)
+				];
+			if (target === 'overclock') {
+				overclock.on = !overclock.on;
+				return overclock.on
+					? [
+							accent('⚡ OVERCLOCK ENGAGED — particle field thermal limits removed.'),
+							out('(the konami code does this too. sudo overclock again to cool down.)')
+						]
+					: [out('overclock disengaged — thermals nominal.')];
+			}
+			return [err('anshu is not in the sudoers file. this incident will be reported.')];
+		}
 	},
 	{
 		name: 'vim',

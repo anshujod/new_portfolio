@@ -20,6 +20,7 @@
 	// svelte-ignore state_referenced_locally -- welcome intentionally seeds the transcript once
 	let lines = $state<TerminalLine[]>([...welcome]);
 	let input = $state('');
+	let busy = $state(false);
 	let inputEl: HTMLInputElement | undefined = $state();
 	let scrollEl: HTMLDivElement | undefined = $state();
 
@@ -36,6 +37,14 @@
 		},
 		clear: () => {
 			lines = [];
+		},
+		print: (line: TerminalLine) => {
+			lines.push(line);
+			scrollToBottom();
+		},
+		update: (text: string) => {
+			if (lines.length) lines[lines.length - 1].text = text;
+			scrollToBottom();
 		}
 	};
 
@@ -44,7 +53,7 @@
 		scrollEl?.scrollTo({ top: scrollEl.scrollHeight });
 	}
 
-	function submit() {
+	async function submit() {
 		const raw = input;
 		input = '';
 		lines.push({ text: raw, kind: 'cmd' });
@@ -52,8 +61,20 @@
 		if (name) {
 			history.push(raw);
 			const cmd = find(name);
-			if (cmd) lines.push(...cmd.run(args, ctx));
-			else
+			if (cmd) {
+				const result = cmd.run(args, ctx);
+				if (result instanceof Promise) {
+					busy = true;
+					try {
+						lines.push(...(await result));
+					} finally {
+						busy = false;
+						inputEl?.focus();
+					}
+				} else {
+					lines.push(...result);
+				}
+			} else
 				lines.push({
 					text: `${name}: command not found — try 'help'`,
 					kind: 'err'
@@ -64,7 +85,7 @@
 
 	function onkeydown(e: KeyboardEvent) {
 		if (e.key === 'Enter') {
-			submit();
+			if (!busy) submit();
 		} else if (e.key === 'ArrowUp') {
 			e.preventDefault();
 			input = history.up(input);
@@ -83,7 +104,7 @@
 	}
 
 	$effect(() => {
-		if (autofocus) inputEl?.focus();
+		if (autofocus) inputEl?.focus({ preventScroll: true });
 	});
 </script>
 
@@ -118,7 +139,9 @@
 				bind:this={inputEl}
 				bind:value={input}
 				{onkeydown}
-				class="w-full bg-transparent text-ink caret-trace outline-none"
+				disabled={busy}
+				placeholder={busy ? 'working…' : ''}
+				class="w-full bg-transparent text-ink caret-trace outline-none placeholder:text-ink-faint disabled:opacity-60"
 				spellcheck="false"
 				autocomplete="off"
 				autocapitalize="off"

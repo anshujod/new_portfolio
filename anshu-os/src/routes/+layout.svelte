@@ -6,6 +6,7 @@
 	import CommandPalette from '$lib/components/system/CommandPalette.svelte';
 	import ParticleField from '$lib/components/system/ParticleField.svelte';
 	import CursorGlow from '$lib/components/system/CursorGlow.svelte';
+	import KonamiCode from '$lib/components/system/KonamiCode.svelte';
 	import { onNavigate } from '$app/navigation';
 	import { site } from '$lib/data/site';
 
@@ -49,6 +50,7 @@
 
 <ParticleField />
 <CursorGlow />
+<KonamiCode />
 
 <NavBar />
 

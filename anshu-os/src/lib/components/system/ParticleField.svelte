@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+	import { overclock } from '$lib/stores/overclock.svelte';
 	import type { FieldHandle } from '$lib/three/field';
 
 	// 5% ambient everywhere; dims to 2.5% inside the blog reader. Texture, not effect.
-	const opacity = $derived(/^\/log\/./.test(page.url.pathname) ? 0.025 : 0.05);
+	// Overclock mode (konami code / `sudo overclock`) brings the field to the foreground.
+	const opacity = $derived(
+		overclock.on ? 0.22 : /^\/log\/./.test(page.url.pathname) ? 0.025 : 0.05
+	);
 
 	let canvasEl: HTMLCanvasElement | undefined = $state();
 	let mode = $state<'none' | 'webgl' | 'static'>('none');
+	let handle = $state<FieldHandle | undefined>();
+
+	$effect(() => {
+		handle?.setBoost(overclock.on);
+	});
 
 	// Coarse-pointer fallback: draw the field once, no WebGL, no animation.
 	function drawStatic(canvas: HTMLCanvasElement) {
@@ -53,7 +62,6 @@
 		}
 
 		mode = 'webgl';
-		let handle: FieldHandle | undefined;
 		let cancelled = false;
 		// three.js loads lazily after first paint — never in the critical path
 		const start = async () => {
@@ -66,6 +74,7 @@
 		return () => {
 			cancelled = true;
 			handle?.destroy();
+			handle = undefined;
 		};
 	});
 </script>

@@ -11,6 +11,8 @@ const MAX_LINKS = 1600;
 
 export interface FieldHandle {
 	destroy(): void;
+	/** overclock mode — faster drift, brighter links */
+	setBoost(on: boolean): void;
 }
 
 const pointsVertex = /* glsl */ `
@@ -162,8 +164,9 @@ export function createField(canvas: HTMLCanvasElement): FieldHandle {
 
 	// --- loop ---
 	let frame = 0;
+	let speed = 1;
 	function tick() {
-		for (let i = 0; i < COUNT * 3; i++) positions[i] += velocities[i];
+		for (let i = 0; i < COUNT * 3; i++) positions[i] += velocities[i] * speed;
 		for (let i = 0; i < COUNT; i++) {
 			for (const [axis, bound] of [
 				[0, BOUNDS.x],
@@ -194,6 +197,10 @@ export function createField(canvas: HTMLCanvasElement): FieldHandle {
 	document.addEventListener('visibilitychange', onVisibility);
 
 	return {
+		setBoost(on: boolean) {
+			speed = on ? 4 : 1;
+			linesMat.opacity = on ? 0.4 : 0.14;
+		},
 		destroy() {
 			renderer.setAnimationLoop(null);
 			document.removeEventListener('visibilitychange', onVisibility);
