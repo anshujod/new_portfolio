@@ -11,11 +11,11 @@ metrics:
   - access + refresh token flow with rotation
   - email verification and password reset
   - reused as the auth layer in later projects
-repo: https://github.com/anshuprakash
+repo: https://github.com/anshujod/mern_auth
 order: 5
 ---
 
-<!-- TODO(anshu): verify repo URL; add email provider (resend/nodemailer/etc.) to stack if you want -->
+<!-- TODO(anshu): add email provider (resend/nodemailer/etc.) to stack if you want -->
 
 ## The problem
 

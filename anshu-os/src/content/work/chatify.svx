@@ -12,11 +12,12 @@ metrics:
   - websocket delivery — no polling, no refresh
   - IP-based rate limiting via Arcjet
   - JWT auth with protected socket handshakes
-repo: https://github.com/anshuprakash
+repo: https://github.com/anshujod/Chat_App
+demo: https://chatify-app-a66h.onrender.com/
 order: 3
 ---
 
-<!-- TODO(anshu): verify repo + demo URLs, add user/message counts if you track them -->
+<!-- TODO(anshu): add user/message counts if you track them -->
 
 ## The problem
 

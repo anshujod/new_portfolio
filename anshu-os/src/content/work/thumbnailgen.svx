@@ -11,11 +11,11 @@ metrics:
   - prompt → generated thumbnail pipeline
   - credit-based usage to cap generation cost
   - gallery + regeneration flow
-repo: https://github.com/anshuprakash
+repo: https://github.com/anshujod/AI_thumbnail
 order: 4
 ---
 
-<!-- TODO(anshu): confirm which image-generation API/model you used, repo + demo URLs, and any usage numbers -->
+<!-- TODO(anshu): confirm which image-generation API/model you used, and any usage numbers -->
 
 ## The problem
 

@@ -13,11 +13,10 @@ metrics:
   - stacked ensemble — Poisson · XGBoost · LightGBM · Elo
   - backtested on WC 2014/18/22 — 0.216 RPS skill score
 repo: https://github.com/anshujod/fifa
+demo: https://fifa-prediction-2026.streamlit.app/
 order: 1
 featured: true
 ---
-
-<!-- TODO(anshu): add the Streamlit Community Cloud demo URL as `demo:` in the frontmatter -->
 
 ## The problem
 
