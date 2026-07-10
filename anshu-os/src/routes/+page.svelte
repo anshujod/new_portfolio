@@ -46,7 +46,7 @@
 		<p class="eyebrow mb-6">{site.name} {site.version} — {site.location.toLowerCase()} · <span class="text-trace tabular-nums">{localTime} IST</span></p>
 
 		<h1
-			class="font-display text-[length:var(--text-hero)] leading-[1.02] font-semibold tracking-[-0.03em] text-ink"
+			class="font-display text-[length:var(--text-hero)] leading-[1.02] font-semibold tracking-[-0.03em] [word-spacing:0.12em] text-ink"
 		>
 			ANSHU PRAKASH<br />HINDOYAR
 		</h1>
